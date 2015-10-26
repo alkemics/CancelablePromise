@@ -1,0 +1,19 @@
+{
+  "name": "cancelable-promise",
+  "version": "1.0.0",
+  "description": "A simple cancelable promise",
+  "main": "CancelablePromise.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/birdy-/CancelablePromise.git"
+  },
+  "author": "Clément 'birdy' Danjou",
+  "license": "GPL-2.0",
+  "bugs": {
+    "url": "https://github.com/birdy-/CancelablePromise/issues"
+  },
+  "homepage": "https://github.com/birdy-/CancelablePromise#readme"
+}
