@@ -8,17 +8,17 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/birdy-/CancelablePromise.git"
+    "url": "git+https://github.com/alkemics/CancelablePromise.git"
   },
-  "author": "Clément 'birdy' Danjou",
+  "author": "Alkemics",
   "license": "GPL-2.0",
   "bugs": {
-    "url": "https://github.com/birdy-/CancelablePromise/issues"
+    "url": "https://github.com/alkemics/CancelablePromise/issues"
   },
   "browserify": {
     "transform": [
       "babelify"
     ]
   },
-  "homepage": "https://github.com/birdy-/CancelablePromise#readme"
+  "homepage": "https://github.com/alkemics/CancelablePromise#readme"
 }
