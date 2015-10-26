@@ -15,5 +15,10 @@
   "bugs": {
     "url": "https://github.com/birdy-/CancelablePromise/issues"
   },
+  "browserify": {
+    "transform": [
+      "babelify"
+    ]
+  },
   "homepage": "https://github.com/birdy-/CancelablePromise#readme"
 }

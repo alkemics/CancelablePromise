@@ -1,6 +1,8 @@
-export default class CancelablePromise extends Promise {
+export default class CancelablePromise {
   constructor(executor) {
-    super(executor);
+    let superResolve, superReject;
+    this._promise = new Promise(executor);
+
     this._canceled = false;
     this._onError = [];
     this._onSuccess = [];
@@ -11,7 +13,7 @@ export default class CancelablePromise extends Promise {
       this._onSuccess.forEach((cb) => {
         cb(...args);
       });
-      this.then = super['then'];
+      this.then = this._promise.then.bind(this._promise);
     };
 
     let error = (...args) => {
@@ -20,9 +22,9 @@ export default class CancelablePromise extends Promise {
       this._onError.forEach((cb) => {
         cb(...args);
       });
-      this.then = super['then'];
+      this.then = this._promise.then.bind(this._promise);
     };
-    super['then'](success, error);
+    this._promise.then(success, error);
   }
 
   then(success, error) {
