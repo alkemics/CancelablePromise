@@ -1,8 +1,8 @@
 {
   "name": "cancelable-promise",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "description": "A simple cancelable promise",
-  "main": "dist/index.js",
+  "main": "dist/CancelablePromise.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "compile": "node ./node_modules/babel/bin/babel.js -d dist/ CancelablePromise.js",
