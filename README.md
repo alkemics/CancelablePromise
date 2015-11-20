@@ -1,5 +1,5 @@
 # CancelablePromise
-A simple Cancelable Promise
+A simple Cancelable Promise for browser
 
 ## Install
 
@@ -7,10 +7,11 @@ A simple Cancelable Promise
 npm install --save cancelable-promise
 ```
 
-You need a browserify with babel build process.
+This package is base on ES6 Promise. See `promise-polyfill` for browser support.
 
 ## Usage
 ```
+var CancelablePromis = require('cancelable-promise');
 var myPromise = new CancelablePromise((resolve, reject) => { ... });
 myPromise.then((response) => { console.log('not canceled'); });
 myPromise.cancel();

@@ -1,10 +1,12 @@
 {
   "name": "cancelable-promise",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "A simple cancelable promise",
-  "main": "CancelablePromise.js",
+  "main": "dist/index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "compile": "node ./node_modules/babel/bin/babel.js -d dist/ CancelablePromise.js",
+    "prepublish": "npm run compile"
   },
   "repository": {
     "type": "git",
@@ -20,5 +22,8 @@
       "babelify"
     ]
   },
-  "homepage": "https://github.com/alkemics/CancelablePromise#readme"
+  "homepage": "https://github.com/alkemics/CancelablePromise#readme",
+  "devDependencies": {
+    "babel": "~5.8.29"
+  }
 }
