@@ -30,6 +30,7 @@ export default class CancelablePromise {
   then(success, error) {
     if (success) this._onSuccess.push(success);
     if (error) this._onError.push(error);
+    return this;
   }
 
   cancel() {
