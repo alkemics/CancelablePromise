@@ -1,4 +1,16 @@
 export default class CancelablePromise {
+  static all(iterable) {
+    return Promise.all(iterable);
+  }
+  static race(iterable) {
+    return Promise.race(iterable);
+  }
+  static reject(iterable) {
+    return Promise.reject(iterable);
+  }
+  static resolve(iterable) {
+    return Promise.resolve(iterable);
+  }
   constructor(executor) {
     let superResolve, superReject;
     this._promise = new Promise(executor);
