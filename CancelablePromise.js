@@ -33,6 +33,11 @@ export default class CancelablePromise {
     return this;
   }
 
+  catch(error) {
+    if (error) this._onError.push(error);
+    return this;
+  }
+
   cancel() {
     this._canceled = true;
   }
