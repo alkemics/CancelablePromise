@@ -7,7 +7,7 @@ A simple Cancelable Promise for browser
 npm install --save cancelable-promise
 ```
 
-This package is base on ES6 Promise. See `promise-polyfill` for browser support.
+This package is based on ES6 Promise. See `promise-polyfill` for browser support.
 
 ## Usage
 ```
