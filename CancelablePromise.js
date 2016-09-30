@@ -22,19 +22,21 @@ export default class CancelablePromise {
     let success = (...args) => {
       if(this._canceled) return;
 
+      this.then = this._promise.then.bind(this._promise);
+
       this._onSuccess.forEach((cb) => {
         cb(...args);
       });
-      this.then = this._promise.then.bind(this._promise);
     };
 
     let error = (...args) => {
       if(this._canceled) return;
 
+      this.then = this._promise.then.bind(this._promise);
+
       this._onError.forEach((cb) => {
         cb(...args);
       });
-      this.then = this._promise.then.bind(this._promise);
     };
     this._promise.then(success, error);
   }
