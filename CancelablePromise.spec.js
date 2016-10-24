@@ -16,10 +16,11 @@ describe(__filename, () => {
       reject('nop');
     });
     promise.then(() => {
-      done(new Error('Callback should not be executed'));
+      done(new Error('Success callback should not be executed'));
     }, (reason) => {
       expect(reason).to.be.equal('nop');
       end();
+      return reason;
     }).catch((reason) => {
       expect(reason).to.be.equal('nop');
       end();
@@ -106,10 +107,16 @@ describe(__filename, () => {
     rejectedPromise.cancel();
     rejectedPromise.then(() => {
       hasFailed = true;
-      done(new Error('Callback should not be executed'));
+      done(new Error('Success callback should not be executed'));
     }, (reason) => {
       hasFailed = true;
-      done(new Error('Callback should not be executed'));
+      done(new Error('Error callback should not be executed'));
+    }).then(() => {
+      hasFailed = true;
+      done(new Error('Promise\'s children success callback should not be executed'));
+    }, (reason) => {
+      hasFailed = true;
+      done(new Error('Promise\'s children error callback should not be executed'));
     });
 
     const end = () => {
