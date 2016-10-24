@@ -16,43 +16,30 @@ export default class CancelablePromise {
     this._promise = new Promise(executor);
 
     this._canceled = false;
-    this._onError = [];
-    this._onSuccess = [];
-
-    let success = (...args) => {
-      if(this._canceled) return;
-
-      this.then = this._promise.then.bind(this._promise);
-
-      this._onSuccess.forEach((cb) => {
-        cb(...args);
-      });
-    };
-
-    let error = (...args) => {
-      if(this._canceled) return;
-
-      this.then = this._promise.then.bind(this._promise);
-
-      this._onError.forEach((cb) => {
-        cb(...args);
-      });
-    };
-    this._promise.then(success, error);
   }
 
   then(success, error) {
-    if (success) this._onSuccess.push(success);
-    if (error) this._onError.push(error);
-    return this;
+    return new CancelablePromise((resolve, reject) => {
+      this._promise.then((r) => {
+        if (success && !this._canceled) {
+          const returned = success(r);
+          resolve(returned || r);
+        }
+      }, (r) => {
+        if (error && !this._canceled) {
+          const returned = error(r);
+          reject(returned || r);
+        }
+      });
+    });
   }
 
   catch(error) {
-    if (error) this._onError.push(error);
-    return this;
+    return this.then(undefined, error);
   }
 
   cancel() {
     this._canceled = true;
+    return this;
   }
 }
