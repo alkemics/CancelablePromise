@@ -23,18 +23,20 @@ export default class CancelablePromise {
       this._promise.then((r) => {
         if (this._canceled) {
           p.cancel();
-          resolve();
         }
         if (success && !this._canceled) {
           resolve(success(r));
+        } else {
+          resolve(r);
         }
       }, (r) => {
         if (this._canceled) {
           p.cancel();
-          reject();
         }
         if (error && !this._canceled) {
-          reject(error(r));
+          resolve(error(r));
+        } else {
+          resolve(r);
         }
       });
     });
