@@ -19,19 +19,28 @@ export default class CancelablePromise {
   }
 
   then(success, error) {
-    return new CancelablePromise((resolve, reject) => {
+    const p = new CancelablePromise((resolve, reject) => {
       this._promise.then((r) => {
+        if (this._canceled) {
+          p.cancel();
+        }
         if (success && !this._canceled) {
-          const returned = success(r);
-          resolve(returned || r);
+          resolve(success(r));
+        } else {
+          resolve(r);
         }
       }, (r) => {
+        if (this._canceled) {
+          p.cancel();
+        }
         if (error && !this._canceled) {
-          const returned = error(r);
-          reject(returned || r);
+          resolve(error(r));
+        } else {
+          resolve(r);
         }
       });
     });
+    return p;
   }
 
   catch(error) {

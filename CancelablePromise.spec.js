@@ -13,15 +13,18 @@ describe(__filename, () => {
   it('should handle errors', (done) => {
     const end = createEnd(done, 2);
     const promise = new CancelablePromise((resolve, reject) => {
-      reject('nop');
+      reject('eagle');
     });
-    promise.then(() => {
-      done(new Error('Callback should not be executed'));
+    const promise2 = promise.then(() => {
+      done(new Error('Success callback should not be executed'));
     }, (reason) => {
-      expect(reason).to.be.equal('nop');
+      expect(reason).to.be.equal('eagle');
       end();
-    }).catch((reason) => {
-      expect(reason).to.be.equal('nop');
+      return 'rabbit';
+    });
+
+    promise2.then((reason) => {
+      expect(reason).to.be.equal('rabbit');
       end();
     });
   });
@@ -41,7 +44,7 @@ describe(__filename, () => {
     });
   });
 
-  it('should works like a tree', (done) => {
+  it('should work like a tree', (done) => {
     const end = createEnd(done, 2);
     const promise = new CancelablePromise((resolve, reject) => {
       resolve('test123');
@@ -66,7 +69,7 @@ describe(__filename, () => {
     });
   });
 
-  it('should works also when then is added in a then', (done) => {
+  it('should work also when then is added in a then', (done) => {
     const end = createEnd(done, 2);
     const promise = new CancelablePromise((resolve, reject) => {
       resolve('test123');
@@ -83,6 +86,25 @@ describe(__filename, () => {
       expect(value).to.be.equal('rabbit');
       end();
       return 'fox';
+    });
+  });
+
+  it('should work when empty or partial then', (done) => {
+    const end = createEnd(done, 2);
+    const promise = new CancelablePromise((resolve, reject) => {
+      resolve('test123');
+    });
+
+    const promise2 = promise.then();
+    promise2.then((value) => {
+      console.log(value);
+      expect(value).to.be.equal('test123');
+      end();
+      return 'fox';
+    }).then((value) => {
+      console.log(value);
+      expect(value).to.be.equal('fox');
+      end();
     });
   });
 
@@ -106,10 +128,16 @@ describe(__filename, () => {
     rejectedPromise.cancel();
     rejectedPromise.then(() => {
       hasFailed = true;
-      done(new Error('Callback should not be executed'));
+      done(new Error('Success callback should not be executed'));
     }, (reason) => {
       hasFailed = true;
-      done(new Error('Callback should not be executed'));
+      done(new Error('Error callback should not be executed'));
+    }).then(() => {
+      hasFailed = true;
+      done(new Error('Promise\'s children success callback should not be executed'));
+    }, (reason) => {
+      hasFailed = true;
+      done(new Error('Promise\'s children error callback should not be executed'));
     });
 
     const end = () => {
