@@ -12,7 +12,6 @@ export default class CancelablePromise {
     return Promise.resolve(iterable);
   }
   constructor(executor) {
-    let superResolve, superReject;
     this._promise = new Promise(executor);
 
     this._canceled = false;
