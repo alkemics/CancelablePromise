@@ -20,4 +20,4 @@ myPromise.cancel();
 ```
 
 ## Test
-You can run test with `npm run test`
+You can run tests with `npm run test`
