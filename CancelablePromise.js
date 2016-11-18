@@ -35,7 +35,7 @@ export default class CancelablePromise {
         if (error && !this._canceled) {
           resolve(error(r));
         } else {
-          resolve(r);
+          reject(r);
         }
       });
     });
