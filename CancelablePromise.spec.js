@@ -140,6 +140,79 @@ describe(__filename, () => {
       done(new Error('Promise\'s children error callback should not be executed'));
     });
 
+    const resolvedPromise = CancelablePromise.resolve(new Promise((resolve, reject) => {
+      reject('bad static resolve');
+    }));
+    resolvedPromise.cancel();
+    resolvedPromise.then(() => {
+      hasFailed = true;
+      done(new Error('Success callback should not be executed'));
+    }, (reason) => {
+      hasFailed = true;
+      done(new Error('Error callback should not be executed'));
+    }).then(() => {
+      hasFailed = true;
+      done(new Error('Promise\'s children success callback should not be executed'));
+    }, (reason) => {
+      hasFailed = true;
+      done(new Error('Promise\'s children error callback should not be executed'));
+    });
+  
+    const allPromise = CancelablePromise.all([new Promise((resolve, reject) => {
+      resolve('good all resolve');
+    })]);
+    allPromise.cancel();
+    allPromise.then(() => {
+      hasFailed = true;
+      done(new Error('Success callback should not be executed'));
+    }, (reason) => {
+      hasFailed = true;
+      done(new Error('Error callback should not be executed'));
+    }).then(() => {
+      hasFailed = true;
+      done(new Error('Promise\'s children success callback should not be executed'));
+    }, (reason) => {
+      hasFailed = true;
+      done(new Error('Promise\'s children error callback should not be executed'));
+    });
+    
+    const racedPromise = CancelablePromise.race([new Promise((resolve, reject) => {
+      resolve('good raced resolve');
+    })]);
+    racedPromise.cancel();
+    racedPromise.then(() => {
+      hasFailed = true;
+      done(new Error('Success callback should not be executed'));
+    }, (reason) => {
+      hasFailed = true;
+      done(new Error('Error callback should not be executed'));
+    }).then(() => {
+      hasFailed = true;
+      done(new Error('Promise\'s children success callback should not be executed'));
+    }, (reason) => {
+      hasFailed = true;
+      done(new Error('Promise\'s children error callback should not be executed'));
+    });
+    
+    
+    const staticRejectedPromise = CancelablePromise.reject(new Promise((resolve, reject) => {
+      resolve('good static reject');
+    }));
+    staticRejectedPromise.cancel();
+    staticRejectedPromise.then(() => {
+      hasFailed = true;
+      done(new Error('Success callback should not be executed'));
+    }, (reason) => {
+      hasFailed = true;
+      done(new Error('Error callback should not be executed'));
+    }).then(() => {
+      hasFailed = true;
+      done(new Error('Promise\'s children success callback should not be executed'));
+    }, (reason) => {
+      hasFailed = true;
+      done(new Error('Promise\'s children error callback should not be executed'));
+    });
+    
     const end = () => {
       if (!hasFailed) done();
     };
