@@ -1,53 +1,64 @@
 export default class CancelablePromise {
-  static all(iterable) {
-    return Promise.all(iterable);
-  }
-  static race(iterable) {
-    return Promise.race(iterable);
-  }
-  static reject(iterable) {
-    return Promise.reject(iterable);
-  }
-  static resolve(iterable) {
-    return Promise.resolve(iterable);
-  }
-  constructor(executor) {
-    this._promise = new Promise(executor);
+    static all(iterable) {
+        return new CancelablePromise((y, n) => {
+            Promise.all(iterable).then(y, n);
+        });
+    }
 
-    this._canceled = false;
-  }
+    static race(iterable) {
+        return new CancelablePromise((y, n) => {
+            Promise.race(iterable).then(y, n);
+        });
+    }
 
-  then(success, error) {
-    const p = new CancelablePromise((resolve, reject) => {
-      this._promise.then((r) => {
-        if (this._canceled) {
-          p.cancel();
-        }
-        if (success && !this._canceled) {
-          resolve(success(r));
-        } else {
-          resolve(r);
-        }
-      }, (r) => {
-        if (this._canceled) {
-          p.cancel();
-        }
-        if (error && !this._canceled) {
-          resolve(error(r));
-        } else {
-          reject(r);
-        }
-      });
-    });
-    return p;
-  }
+    static reject(value) {
+        return new CancelablePromise((y, n) => {
+            Promise.reject(value).then(y, n);
+        });
+    }
 
-  catch(error) {
-    return this.then(undefined, error);
-  }
+    static resolve(value) {
+        return new CancelablePromise((y, n) => {
+            Promise.resolve(value).then(y, n);
+        });
+    }
 
-  cancel() {
-    this._canceled = true;
-    return this;
-  }
+    constructor(executor) {
+        this._promise = new Promise(executor);
+        this._canceled = false;
+    }
+
+    then(success, error) {
+        const p = new CancelablePromise((resolve, reject) => {
+            this._promise.then((r) => {
+                if (this._canceled) {
+                    p.cancel();
+                }
+                if (success && !this._canceled) {
+                    resolve(success(r));
+                } else {
+                    resolve(r);
+                }
+            }, (r) => {
+                if (this._canceled) {
+                    p.cancel();
+                }
+                if (error && !this._canceled) {
+                    resolve(error(r));
+                } else {
+                    reject(r);
+                }
+            });
+        });
+        return p;
+    }
+
+    catch(error) {
+        return this.then(undefined, error);
+    }
+
+    cancel() {
+        this._canceled = true;
+        return this;
+    }
 }
