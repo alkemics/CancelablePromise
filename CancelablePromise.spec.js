@@ -1,4 +1,7 @@
-import { assert, expect } from 'chai';
+import {
+  assert,
+  expect
+} from 'chai';
 import CancelablePromise from './CancelablePromise'
 
 const createEnd = (done, total) => {
@@ -157,7 +160,7 @@ describe(__filename, () => {
       hasFailed = true;
       done(new Error('Promise\'s children error callback should not be executed'));
     });
-  
+
     const allPromise = CancelablePromise.all([new Promise((resolve, reject) => {
       resolve('good all resolve');
     })]);
@@ -175,7 +178,7 @@ describe(__filename, () => {
       hasFailed = true;
       done(new Error('Promise\'s children error callback should not be executed'));
     });
-    
+
     const racedPromise = CancelablePromise.race([new Promise((resolve, reject) => {
       resolve('good raced resolve');
     })]);
@@ -193,8 +196,8 @@ describe(__filename, () => {
       hasFailed = true;
       done(new Error('Promise\'s children error callback should not be executed'));
     });
-    
-    
+
+
     const staticRejectedPromise = CancelablePromise.reject(new Promise((resolve, reject) => {
       resolve('good static reject');
     }));
@@ -212,7 +215,7 @@ describe(__filename, () => {
       hasFailed = true;
       done(new Error('Promise\'s children error callback should not be executed'));
     });
-    
+
     const end = () => {
       if (!hasFailed) done();
     };
