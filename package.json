@@ -1,6 +1,6 @@
 {
   "name": "cancelable-promise",
-  "version": "2.2.0",
+  "version": "2.3.0",
   "description": "A simple cancelable promise",
   "main": "dist/CancelablePromise.js",
   "scripts": {
