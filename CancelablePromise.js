@@ -1,19 +1,30 @@
 export default class CancelablePromise {
   static all(iterable) {
-    return Promise.all(iterable);
+    return new CancelablePromise((y, n) => {
+      Promise.all(iterable).then(y, n);
+    });
   }
+
   static race(iterable) {
-    return Promise.race(iterable);
+    return new CancelablePromise((y, n) => {
+      Promise.race(iterable).then(y, n);
+    });
   }
-  static reject(iterable) {
-    return Promise.reject(iterable);
+
+  static reject(value) {
+    return new CancelablePromise((y, n) => {
+      Promise.reject(value).then(y, n);
+    });
   }
-  static resolve(iterable) {
-    return Promise.resolve(iterable);
+
+  static resolve(value) {
+    return new CancelablePromise((y, n) => {
+      Promise.resolve(value).then(y, n);
+    });
   }
+
   constructor(executor) {
     this._promise = new Promise(executor);
-
     this._canceled = false;
   }
 
