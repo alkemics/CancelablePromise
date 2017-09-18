@@ -1,3 +1,11 @@
+const handleCallback = (resolve, reject, callback, r) => {
+  try {
+    resolve(callback(r));
+  } catch (e) {
+    reject(e);
+  }
+};
+
 export default class CancelablePromise {
   static all(iterable) {
     return new CancelablePromise((y, n) => {
@@ -30,20 +38,12 @@ export default class CancelablePromise {
 
   then(success, error) {
     const p = new CancelablePromise((resolve, reject) => {
-      const handleCallback = (callback, r) => {
-        try {
-          resolve(callback(r));
-        } catch (e) {
-          reject(e);
-        }
-      };
-
       this._promise.then((r) => {
         if (this._canceled) {
           p.cancel();
         }
         if (success && !this._canceled) {
-          handleCallback(success, r);
+          handleCallback(resolve, reject, success, r);
         } else {
           resolve(r);
         }
@@ -52,7 +52,7 @@ export default class CancelablePromise {
           p.cancel();
         }
         if (error && !this._canceled) {
-          handleCallback(error, r);
+          handleCallback(resolve, reject, error, r);
         } else {
           reject(r);
         }
