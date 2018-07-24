@@ -257,4 +257,31 @@ describe(__filename, () => {
     };
     setTimeout(end, 0);
   });
+
+  it('should call cancel function if rejected after a cancel', (done) => {
+    const promise = new CancelablePromise((resolve, reject) => {
+      reject(new Error('test456'));
+    });
+    let cancelCalled = false;
+    let catchCalled = false;
+
+    promise.cancel((err) => {
+      cancelCalled = true;
+    });
+
+    promise.catch((err) => {
+      catchCalled = true;
+    })
+
+    const end = () => {
+      let hasFailed = false;
+      if (catchCalled) {
+        hasFailed = 'Promise should NOT call catch when rejected after a cancel';
+      } else if (!cancelCalled) {
+        hasFailed = 'Promise should call cancel error callback on a rejection';
+      }
+      done(!!hasFailed ? new Error(hasFailed) : undefined);
+    };
+    setTimeout(end, 0);
+  })
 });
