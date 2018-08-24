@@ -67,7 +67,7 @@ export default class CancelablePromise {
 
   cancel(errorCallback) {
     this._canceled = true;
-    if (error) {
+    if (errorCallback) {
       this._promise.catch(errorCallback);
     }
     return this;
