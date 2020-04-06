@@ -39,7 +39,7 @@ export default class CancelablePromise {
   then(success, error) {
     const p = new CancelablePromise((resolve, reject) => {
       this._promise.then(
-        r => {
+        (r) => {
           if (this._canceled) {
             p.cancel();
           }
@@ -49,7 +49,7 @@ export default class CancelablePromise {
             resolve(r);
           }
         },
-        r => {
+        (r) => {
           if (this._canceled) {
             p.cancel();
           }
