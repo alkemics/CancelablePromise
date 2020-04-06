@@ -1,4 +1,4 @@
-import { assert, expect } from 'chai';
+import { expect } from 'chai';
 import CancelablePromise from './CancelablePromise';
 
 const createEnd = (done, total) => {
@@ -9,8 +9,8 @@ const createEnd = (done, total) => {
   };
 };
 
-describe(__filename, () => {
-  it('should handle errors', done => {
+describe('CancelablePromise', () => {
+  it('should handle errors', (done) => {
     const end = createEnd(done, 2);
     const promise = new CancelablePromise((resolve, reject) => {
       reject('eagle');
@@ -19,107 +19,107 @@ describe(__filename, () => {
       () => {
         done(new Error('Success callback should not be executed'));
       },
-      reason => {
+      (reason) => {
         expect(reason).to.be.equal('eagle');
         end();
         return 'rabbit';
       }
     );
 
-    promise2.then(reason => {
+    promise2.then((reason) => {
       expect(reason).to.be.equal('rabbit');
       end();
     });
   });
 
-  it('should return new value to the next then', done => {
+  it('should return new value to the next then', (done) => {
     const end = createEnd(done, 2);
-    const promise = new CancelablePromise((resolve, reject) => {
+    const promise = new CancelablePromise((resolve) => {
       resolve(5);
     });
     promise
-      .then(value => {
+      .then((value) => {
         expect(value).to.be.equal(5);
         end();
         return value + 10;
       })
-      .then(value => {
+      .then((value) => {
         expect(value).to.be.equal(15);
         end();
       });
   });
 
-  it('should work like a tree', done => {
+  it('should work like a tree', (done) => {
     const end = createEnd(done, 2);
-    const promise = new CancelablePromise((resolve, reject) => {
+    const promise = new CancelablePromise((resolve) => {
       resolve('test123');
     });
 
-    const promise2 = promise.then(value => {
+    const promise2 = promise.then(() => {
       return 'duck';
     });
 
-    const promise3 = promise.then(value => {
+    const promise3 = promise.then(() => {
       return 'dog';
     });
 
-    promise2.then(value => {
+    promise2.then((value) => {
       expect(value).to.be.equal('duck');
       end();
     });
 
-    promise3.then(value => {
+    promise3.then((value) => {
       expect(value).to.be.equal('dog');
       end();
     });
   });
 
-  it('should work also when then is added in a then', done => {
+  it('should work also when then is added in a then', (done) => {
     const end = createEnd(done, 2);
-    const promise = new CancelablePromise((resolve, reject) => {
+    const promise = new CancelablePromise((resolve) => {
       resolve('test123');
     });
 
     const promise2 = promise
-      .then(value => {
+      .then((value) => {
         expect(value).to.be.equal('test123');
-        promise2.then(v => {
+        promise2.then((v) => {
           expect(v).to.be.equal('fox');
           end();
         });
         return 'rabbit';
       })
-      .then(value => {
+      .then((value) => {
         expect(value).to.be.equal('rabbit');
         end();
         return 'fox';
       });
   });
 
-  it('should work when empty or partial then', done => {
+  it('should work when empty or partial then', (done) => {
     const end = createEnd(done, 2);
-    const promise = new CancelablePromise((resolve, reject) => {
+    const promise = new CancelablePromise((resolve) => {
       resolve('test123');
     });
 
     const promise2 = promise.then();
     promise2
-      .then(value => {
+      .then((value) => {
         console.log(value);
         expect(value).to.be.equal('test123');
         end();
         return 'fox';
       })
-      .then(value => {
+      .then((value) => {
         console.log(value);
         expect(value).to.be.equal('fox');
         end();
       });
   });
 
-  it('should not execute callbacks if canceled', done => {
+  it('should not execute callbacks if canceled', (done) => {
     let hasFailed = false;
-    const successfulPromise = new CancelablePromise((resolve, reject) => {
+    const successfulPromise = new CancelablePromise((resolve) => {
       resolve('good');
     });
     successfulPromise.cancel();
@@ -128,7 +128,7 @@ describe(__filename, () => {
         hasFailed = true;
         done(new Error('Callback should not be executed'));
       },
-      reason => {
+      () => {
         hasFailed = true;
         done(new Error('Callback should not be executed'));
       }
@@ -144,7 +144,7 @@ describe(__filename, () => {
           hasFailed = true;
           done(new Error('Success callback should not be executed'));
         },
-        reason => {
+        () => {
           hasFailed = true;
           done(new Error('Error callback should not be executed'));
         }
@@ -158,7 +158,7 @@ describe(__filename, () => {
             )
           );
         },
-        reason => {
+        () => {
           hasFailed = true;
           done(
             new Error(
@@ -180,7 +180,7 @@ describe(__filename, () => {
           hasFailed = true;
           done(new Error('Success callback should not be executed'));
         },
-        reason => {
+        () => {
           hasFailed = true;
           done(new Error('Error callback should not be executed'));
         }
@@ -194,7 +194,7 @@ describe(__filename, () => {
             )
           );
         },
-        reason => {
+        () => {
           hasFailed = true;
           done(
             new Error(
@@ -205,7 +205,7 @@ describe(__filename, () => {
       );
 
     const allPromise = CancelablePromise.all([
-      new Promise((resolve, reject) => {
+      new Promise((resolve) => {
         resolve('good all resolve');
       }),
     ]);
@@ -216,7 +216,7 @@ describe(__filename, () => {
           hasFailed = true;
           done(new Error('Success callback should not be executed'));
         },
-        reason => {
+        () => {
           hasFailed = true;
           done(new Error('Error callback should not be executed'));
         }
@@ -230,7 +230,7 @@ describe(__filename, () => {
             )
           );
         },
-        reason => {
+        () => {
           hasFailed = true;
           done(
             new Error(
@@ -241,7 +241,7 @@ describe(__filename, () => {
       );
 
     const racedPromise = CancelablePromise.race([
-      new Promise((resolve, reject) => {
+      new Promise((resolve) => {
         resolve('good raced resolve');
       }),
     ]);
@@ -252,7 +252,7 @@ describe(__filename, () => {
           hasFailed = true;
           done(new Error('Success callback should not be executed'));
         },
-        reason => {
+        () => {
           hasFailed = true;
           done(new Error('Error callback should not be executed'));
         }
@@ -266,7 +266,7 @@ describe(__filename, () => {
             )
           );
         },
-        reason => {
+        () => {
           hasFailed = true;
           done(
             new Error(
@@ -277,7 +277,7 @@ describe(__filename, () => {
       );
 
     const staticRejectedPromise = CancelablePromise.reject(
-      new Promise((resolve, reject) => {
+      new Promise((resolve) => {
         resolve('good static reject');
       })
     );
@@ -288,7 +288,7 @@ describe(__filename, () => {
           hasFailed = true;
           done(new Error('Success callback should not be executed'));
         },
-        reason => {
+        () => {
           hasFailed = true;
           done(new Error('Error callback should not be executed'));
         }
@@ -302,7 +302,7 @@ describe(__filename, () => {
             )
           );
         },
-        reason => {
+        () => {
           hasFailed = true;
           done(
             new Error(
@@ -318,17 +318,17 @@ describe(__filename, () => {
     setTimeout(end, 0);
   });
 
-  it('should reject the promise when the success callback throws an error', done => {
-    const promise = new CancelablePromise((resolve, reject) => {
+  it('should reject the promise when the success callback throws an error', (done) => {
+    const promise = new CancelablePromise((resolve) => {
       resolve('test123');
     });
     let hasFailed = true;
 
     promise
-      .then(value => {
+      .then(() => {
         throw new Error('The callback threw an error');
       })
-      .catch(error => {
+      .catch(() => {
         hasFailed = false;
       });
 
@@ -344,17 +344,17 @@ describe(__filename, () => {
     setTimeout(end, 0);
   });
 
-  it('should reject the promise when the error callback throws an error', done => {
+  it('should reject the promise when the error callback throws an error', (done) => {
     const promise = new CancelablePromise((resolve, reject) => {
       reject(new Error('test123'));
     });
     let hasFailed = true;
 
     promise
-      .catch(error => {
+      .catch(() => {
         throw new Error('The callback threw an error');
       })
-      .catch(error => {
+      .catch(() => {
         hasFailed = false;
       });
 
@@ -370,18 +370,18 @@ describe(__filename, () => {
     setTimeout(end, 0);
   });
 
-  it('should call cancel function if rejected after a cancel', done => {
+  it('should call cancel function if rejected after a cancel', (done) => {
     const promise = new CancelablePromise((resolve, reject) => {
       reject(new Error('test456'));
     });
     let cancelCalled = false;
     let catchCalled = false;
 
-    promise.cancel(err => {
+    promise.cancel(() => {
       cancelCalled = true;
     });
 
-    promise.catch(err => {
+    promise.catch(() => {
       catchCalled = true;
     });
 
@@ -393,7 +393,7 @@ describe(__filename, () => {
       } else if (!cancelCalled) {
         hasFailed = 'Promise should call cancel error callback on a rejection';
       }
-      done(!!hasFailed ? new Error(hasFailed) : undefined);
+      done(hasFailed ? new Error(hasFailed) : undefined);
     };
     setTimeout(end, 0);
   });
