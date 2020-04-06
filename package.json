@@ -1,6 +1,6 @@
 {
   "name": "cancelable-promise",
-  "version": "2.5.0",
+  "version": "2.6.0",
   "description": "A simple cancelable promise",
   "main": "dist/CancelablePromise.js",
   "jsnext:main": "CancelablePromise.js",
@@ -11,27 +11,32 @@
     "README.md"
   ],
   "scripts": {
-    "test": "mocha --opts mocha.opts",
     "build": "babel -d dist/ CancelablePromise.js",
-    "prepublish": "npm run build"
+    "jest": "jest",
+    "lint": "eslint .",
+    "prepublish": "npm test",
+    "prettier": "prettier --write '*.{js,md}'",
+    "test:all": "npm run build && jest --testMatch '**/*.{test,itg}.js'",
+    "test:itg": "npm run build && jest --testMatch '**/*.itg.js'",
+    "test": "npm run lint && npm run test:all"
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/alkemics/CancelablePromise.git"
   },
   "author": "Alkemics",
-  "license": "GPL-2.0",
+  "license": "MIT",
   "bugs": {
     "url": "https://github.com/alkemics/CancelablePromise/issues"
   },
   "homepage": "https://github.com/alkemics/CancelablePromise#readme",
   "devDependencies": {
-    "@babel/cli": "~7.5.0",
-    "@babel/core": "~7.5.4",
-    "@babel/preset-env": "~7.5.4",
-    "@babel/register": "~7.4.4",
-    "chai": "~4.2.0",
-    "mocha": "~6.1.4",
-    "prettier": "~1.18.2"
+    "@babel/cli": "~7.8.4",
+    "@babel/core": "~7.9.0",
+    "@babel/preset-env": "~7.9.0",
+    "@babel/register": "~7.9.0",
+    "eslint": "~6.8.0",
+    "jest": "~25.2.7",
+    "prettier": "~2.0.4"
   }
 }

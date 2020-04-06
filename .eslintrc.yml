@@ -1,0 +1,17 @@
+env:
+  browser: true
+  es6: true
+  node: true
+extends: 'eslint:recommended'
+parserOptions:
+  ecmaVersion: 2018
+  sourceType: module
+rules: {}
+overrides:
+  - files:
+      - '*.test.js'
+      - '*.itg.js'
+    env:
+      jest: true
+ignorePatterns:
+  - 'dist/'
