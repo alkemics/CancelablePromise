@@ -1,27 +1,42 @@
 {
   "name": "cancelable-promise",
-  "version": "2.6.0",
+  "version": "3.0.0",
   "description": "A simple cancelable promise",
   "main": "dist/CancelablePromise.js",
-  "jsnext:main": "CancelablePromise.js",
+  "jsnext:main": "src/CancelablePromise.js",
   "files": [
     "dist/CancelablePromise.js",
-    "CancelablePromise.js",
+    "dist/CancelablePromise.min.js",
+    "dist/CancelablePromise.d.ts",
+    "src/CancelablePromise.js",
+    "src/CancelablePromise.d.ts",
     "LICENSE",
-    "README.md"
+    "README.md",
+    "CODE_OF_CONDUCT.md",
+    "CHANGELOG.md"
   ],
   "scripts": {
-    "test": "eslint . && mocha --opts mocha.opts",
-    "build": "babel -d dist/ CancelablePromise.js",
+    "babel": "babel src/CancelablePromise.js -d dist",
+    "build": "npm run clean && npm run babel && npm run uglify && npm run copy",
+    "clean": "node scripts.js clean",
+    "copy": "node scripts.js copy",
+    "cypress": "cypress run --browser chrome --headless",
+    "jest:rc": "jest --findRelatedTests",
+    "jest": "jest",
+    "lint:rc": "eslint --fix",
+    "lint": "eslint .",
     "prepublish": "npm run build",
-    "prettier": "prettier --write '*.{js,md}'"
+    "prettier:rc": "prettier --write",
+    "prettier": "prettier --write .",
+    "test": "npm run lint && npm run jest",
+    "uglify": "uglifyjs dist/CancelablePromise.js -c -m -o dist/CancelablePromise.min.js"
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/alkemics/CancelablePromise.git"
   },
   "author": "Alkemics",
-  "license": "GPL-2.0",
+  "license": "MIT",
   "bugs": {
     "url": "https://github.com/alkemics/CancelablePromise/issues"
   },
@@ -30,10 +45,15 @@
     "@babel/cli": "~7.8.4",
     "@babel/core": "~7.9.0",
     "@babel/preset-env": "~7.9.0",
-    "@babel/register": "~7.9.0",
-    "chai": "~4.2.0",
+    "babel-eslint": "~10.1.0",
+    "core-js": "~3.6.4",
+    "cypress": "~4.4.0",
     "eslint": "~6.8.0",
-    "mocha": "~7.1.1",
-    "prettier": "~2.0.4"
+    "fs-extra": "~9.0.0",
+    "husky": "~4.2.3",
+    "jest": "~25.3.0",
+    "lint-staged": "~10.1.2",
+    "prettier": "~2.0.4",
+    "uglify-js": "~3.9.1"
   }
 }
