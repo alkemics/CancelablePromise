@@ -28,3 +28,5 @@ node_modules
 
 # Compile dir
 dist/
+
+cypress/videos

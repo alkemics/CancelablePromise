@@ -16,3 +16,10 @@ overrides:
       - '**/*.test.js'
     env:
       jest: true
+  - files:
+      - 'cypress/**/*.js'
+    env:
+      mocha: true
+    globals:
+      cy: true
+      Cypress: true

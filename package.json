@@ -14,6 +14,7 @@
   ],
   "scripts": {
     "babel": "babel src/index.js -d dist",
+    "cypress": "cypress run --browser chrome --headless",
     "build": "npm run clean && npm run babel && npm run copy",
     "clean": "node scripts.js clean",
     "copy": "node scripts.js copy",
@@ -43,6 +44,7 @@
     "abort-controller": "~3.0.0",
     "babel-eslint": "~10.1.0",
     "core-js": "~3.6.4",
+    "cypress": "~4.3.0",
     "eslint": "~6.8.0",
     "fs-extra": "~9.0.0",
     "husky": "~4.2.3",
