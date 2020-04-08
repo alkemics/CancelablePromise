@@ -1,16 +1,24 @@
 # CancelablePromise
 
+[![GitHub license](https://img.shields.io/github/license/alkemics/CancelablePromise)](https://github.com/alkemics/CancelablePromise/blob/master/LICENSE) [![npm version](https://img.shields.io/npm/v/cancelable-promise)](https://www.npmjs.com/package/cancelable-promise) [![Node.js CI](https://github.com/alkemics/CancelablePromise/workflows/Node.js%20CI/badge.svg?branch=master)](https://github.com/alkemics/CancelablePromise/actions?query=workflow%3A%22Node.js+CI%22) [![End-to-end tests](https://github.com/alkemics/CancelablePromise/workflows/End-to-end%20tests/badge.svg?branch=master)](https://github.com/alkemics/CancelablePromise/actions?query=workflow%3A%22End-to-end+tests%22) [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](https://github.com/alkemics/CancelablePromise/pulls)
+
 A simple Cancelable Promise for browser
+
+This package is based on ES Promise.
+
+- See [caniuse](https://caniuse.com/#search=Promise) for browser support
+- See [core-js](https://github.com/zloirock/core-js#ecmascript-promise) for polyfills
+
+FYI, you can cancel a fetch request with AbortController & AbortSignal.
+
+- See [MDN](https://developer.mozilla.org/en-US/docs/Web/API/AbortController)
+- See [caniuse](https://caniuse.com/#feat=abortcontroller)
 
 ## Install
 
 ```
 npm install --save cancelable-promise
 ```
-
-This package is based on ES Promise.
-See [caniuse](https://caniuse.com/#search=Promise) for browser support.
-See [core-js](https://github.com/zloirock/core-js#ecmascript-promise) for polyfills.
 
 ## Usage
 
@@ -83,6 +91,24 @@ const promise = makeCancelable(fetch('url', { signal }), { signal });
 controller.abort();
 ```
 
-## Test
+## Tests
 
-You can run tests with `npm test`
+Run `eslint` and `jest`
+
+```shell
+npm test
+```
+
+Run `cypress`
+
+```shell
+npm run cypress
+```
+
+## Contributing
+
+This repository is open to any contribution: you are welcome to open a pull request.
+
+## License
+
+[MIT License](LICENSE)
