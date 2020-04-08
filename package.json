@@ -10,7 +10,8 @@
     "src/index.js",
     "src/index.d.ts",
     "LICENSE",
-    "README.md"
+    "README.md",
+    "CODE_OF_CONDUCT.md"
   ],
   "scripts": {
     "babel": "babel src/index.js -d dist",

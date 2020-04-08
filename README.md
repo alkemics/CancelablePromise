@@ -1,8 +1,8 @@
-# CancelablePromise
+# cancelable-promise
 
 [![GitHub license](https://img.shields.io/github/license/alkemics/CancelablePromise)](https://github.com/alkemics/CancelablePromise/blob/master/LICENSE) [![npm version](https://img.shields.io/npm/v/cancelable-promise)](https://www.npmjs.com/package/cancelable-promise) [![Node.js CI](https://github.com/alkemics/CancelablePromise/workflows/Node.js%20CI/badge.svg?branch=master)](https://github.com/alkemics/CancelablePromise/actions?query=workflow%3A%22Node.js+CI%22) [![End-to-end tests](https://github.com/alkemics/CancelablePromise/workflows/End-to-end%20tests/badge.svg?branch=master)](https://github.com/alkemics/CancelablePromise/actions?query=workflow%3A%22End-to-end+tests%22) [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](https://github.com/alkemics/CancelablePromise/pulls)
 
-A simple Cancelable Promise for browser
+A simple Cancelable Promise.
 
 This package is based on ES Promise.
 
@@ -14,6 +14,27 @@ FYI, you can cancel a fetch request with AbortController & AbortSignal.
 - See [MDN](https://developer.mozilla.org/en-US/docs/Web/API/AbortController)
 - See [caniuse](https://caniuse.com/#feat=abortcontroller)
 
+## Table of Contents
+
+- [Install](#install)
+- [Usage](#usage)
+  - [Basic example](#basic-example)
+  - [Delegate abort AbortController](#delegate-abort-abortcontroller)
+  - [Cancel promise with AbortController](#cancel-promise-with-abortcontroller)
+- [API](#api)
+  - [cancelablePromise](#cancelablepromise)
+  - [makeCancelable](#makecancelable)
+  - [CancelablePromise constructor](#cancelablepromise-constructor)
+  - [Static methods](#static-methods)
+- [Scripts](#scripts)
+  - [Build](#build)
+  - [Tests](#tests)
+  - [End-to-end tests](#end-to-end-tests)
+- [Contributing](#contributing)
+  - [Contributors](#contributors)
+- [Code of conduct](#code-of-conduct)
+- [License](#license)
+
 ## Install
 
 ```
@@ -23,6 +44,8 @@ npm install --save cancelable-promise
 ## Usage
 
 CancelablePromise acts like an ES Promise: you can use `Promise.all`, `Promise.race` with your CancelablePromise for example. The only difference is you'll have a `cancel` method on your promise to cancel future execution of `then` or `catch` functions. CancelablePromise will also cancel all callbacks attached to new promises returned by `then`/`catch`.
+
+### Basic example
 
 ```javascript
 import { cancelablePromise, makeCancelable } from 'cancelable-promise';
@@ -35,23 +58,7 @@ promise.cancel();
 // Nothing will be logged
 ```
 
-There are 3 possible ways to create a cancelable promise:
-
-```javascript
-import {
-  cancelablePromise,
-  makeCancelable,
-  CancelablePromise,
-} from 'cancelable-promise';
-
-cancelablePromise((resolve, reject) => {});
-
-makeCancelable(new Promise((resolve, reject) => {}));
-
-new CancelablePromise((resolve, reject) => {});
-```
-
-### Delegate AbortController.abort()
+### Delegate abort AbortController
 
 ```javascript
 import { makeCancelable } from 'cancelable-promise';
@@ -91,13 +98,113 @@ const promise = makeCancelable(fetch('url', { signal }), { signal });
 controller.abort();
 ```
 
-## Tests
+## API
+
+### cancelablePromise
+
+```javascript
+import { cancelablePromise } from 'cancelable-promise';
+
+/**
+ * cancelablePromise
+ *
+ * @param {(resolve, reject) => void} executor - same as Promise(executor)
+ * @param {Object} options - optional
+ * @param {AbortController | AbortControler[]} options.controler
+ * @param {AbortSignal | AbortSignal[]} options.signal
+ * @returns {CancelablePromise}
+ */
+
+const promise = cancelablePromise(
+  (resolve, reject) => {
+    resolve('ok');
+  },
+  { controller, signal }
+);
+```
+
+### makeCancelable
+
+```javascript
+import { cancelablePromise } from 'cancelable-promise';
+
+/**
+ * makeCancelable
+ *
+ * @param {Promise} promise - native promise as 1st arg
+ * @param {Object} options - optional
+ * @param {AbortController | AbortControler[]} options.controler
+ * @param {AbortSignal | AbortSignal[]} options.signal
+ * @returns {CancelablePromise}
+ */
+
+const promise = makeCancelable(
+  new Promise(
+    (resolve, reject) => {
+      resolve('ok');
+    },
+    { controller, signal }
+  )
+);
+```
+
+### CancelablePromise constructor
+
+```javascript
+import { CancelablePromise } from 'cancelable-promise';
+
+/**
+ * CancelablePromise constructor
+ *
+ * @param {(resolve, reject) => void} executor - same as Promise(executor)
+ * @param {Object} options - optional
+ * @param {AbortController | AbortControler[]} options.controler
+ * @param {AbortSignal | AbortSignal[]} options.signal
+ * @returns {CancelablePromise}
+ */
+
+const promise = new CancelablePromise(
+  (resolve, reject) => {
+    resolve('ok');
+  },
+  { controller, signal }
+);
+```
+
+### Static methods
+
+Same as Promise static methods.
+
+```javascript
+import { CancelablePromise } from 'cancelable-promise';
+
+CancelablePromise.resolve();
+CancelablePromise.reject();
+CancelablePromise.all([promise1, promise2], options);
+CancelablePromise.race([promise1, promise2], options);
+CancelablePromise.allSettled([promise1, promise2], options);
+// for options, see cancelablePromise or makeCancelable options
+```
+
+## Scripts
+
+### Build
+
+Run babel
+
+```
+npm run build
+```
+
+### Tests
 
 Run `eslint` and `jest`
 
 ```shell
 npm test
 ```
+
+### End-to-end tests
 
 Run `cypress`
 
@@ -107,8 +214,16 @@ npm run cypress
 
 ## Contributing
 
-This repository is open to any contribution: you are welcome to open a pull request.
+Feel free to dive in! [Open an issue](https://github.com/alkemics/CancelablePromise/issues) or [submit PRs](https://github.com/alkemics/CancelablePromise/compare).
+
+### Contributors
+
+This project exists thanks to all [the people who contribute](https://github.com/alkemics/CancelablePromise/graphs/contributors).
+
+## Code of conduct
+
+[Contributor Covenant Code of Conduct](CODE_OF_CONDUCT.md).
 
 ## License
 
-[MIT License](LICENSE)
+[MIT License](LICENSE) © Alkemics
