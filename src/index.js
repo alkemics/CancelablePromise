@@ -10,42 +10,24 @@ function createCallback(onResult, extraProps) {
 }
 
 function thenFunc(extraProps, onSuccess, onError) {
-  let args = [];
-  let localOnSuccess = createCallback(onSuccess, extraProps);
-  let localOnError = createCallback(onError, extraProps);
-
-  if (localOnError) {
-    args = [localOnSuccess, localOnError];
-  } else if (localOnSuccess) {
-    args = [localOnSuccess];
-  }
-
-  const thenPromise = this.then.apply(this, args);
-  return proxify(thenPromise, extraProps);
+  return proxify(
+    this.then(
+      createCallback(onSuccess, extraProps),
+      createCallback(onError, extraProps)
+    ),
+    extraProps
+  );
 }
 
 function catchFunc(extraProps, onError) {
-  let args = [];
-  let localOnError = createCallback(onError, extraProps);
-
-  if (localOnError) {
-    args = [localOnError];
-  }
-
-  const catchPromise = this.catch.apply(this, args);
-  return proxify(catchPromise, extraProps);
+  return proxify(this.catch(createCallback(onError, extraProps)), extraProps);
 }
 
 function finallyFunc(extraProps, onFinally) {
-  let args = [];
-  let localOnFinally = createCallback(onFinally, extraProps);
-
-  if (localOnFinally) {
-    args = [localOnFinally];
-  }
-
-  const finallyPromise = this.finally.apply(this, args);
-  return proxify(finallyPromise, extraProps);
+  return proxify(
+    this.finally(createCallback(onFinally, extraProps)),
+    extraProps
+  );
 }
 
 function cancelFunc(extraProps, onCancel) {
