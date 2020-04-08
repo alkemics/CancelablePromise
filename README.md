@@ -43,6 +43,46 @@ makeCancelable(new Promise((resolve, reject) => {}));
 new CancelablePromise((resolve, reject) => {});
 ```
 
+### Delegate AbortController.abort()
+
+```javascript
+import { makeCancelable } from 'cancelable-promise';
+
+const controller = new AbortController();
+const signal = controller.signal;
+const promise = makeCancelable(fetch('url', { signal }), { controller });
+// canceling the promise will abort the controller
+promise.cancel();
+```
+
+```javascript
+import { CancelablePromise } from 'cancelable-promise';
+
+const controller1 = new AbortController();
+const controller2 = new AbortController();
+const promise = CancelablePromise.all(
+  [
+    fetch('url1', { signal: controller1.signal }),
+    fetch('url2', { signal: controller2.signal }),
+  ],
+  { controller: [controller1, controller2] }
+);
+// canceling the promise will abort these controllers
+promise.cancel();
+```
+
+### Cancel promise with AbortController
+
+```javascript
+import { cancelablePromise } from 'cancelable-promise';
+
+const controller = new AbortController();
+const signal = controller.signal;
+const promise = makeCancelable(fetch('url', { signal }), { signal });
+// aborting the controller will cancel the promise
+controller.abort();
+```
+
 ## Test
 
 You can run tests with `npm test`

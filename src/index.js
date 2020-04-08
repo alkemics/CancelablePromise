@@ -30,11 +30,16 @@ function finallyFunc(extraProps, onFinally) {
   );
 }
 
-function cancelFunc(extraProps, onCancel) {
+function cancelFunc(extraProps) {
   if (!extraProps.isCanceled) {
     extraProps.isCanceled = true;
-    if (onCancel) {
-      onCancel();
+    const controllerOpt = extraProps.options?.controller;
+    if (controllerOpt) {
+      // controller option can be a single controller or a list of controllers
+      const controllers = [].concat(controllerOpt);
+      for (const controller of controllers) {
+        controller?.abort();
+      }
     }
   }
   return extraProps.isCanceled;
@@ -72,37 +77,47 @@ function proxify(promise, extraProps) {
   };
 }
 
-export const cancelablePromise = (executor) => {
-  const promise = new Promise(executor);
-  return proxify(promise, { isCanceled: false });
+export const makeCancelable = (promise, options) => {
+  const cancelablePromise = proxify(promise, { isCanceled: false, options });
+  const signalOpt = options?.signal;
+  if (signalOpt) {
+    const signals = [].concat(signalOpt);
+    for (const signal of signals) {
+      signal.addEventListener('abort', () => {
+        cancelablePromise.cancel();
+      });
+    }
+  }
+  return cancelablePromise;
 };
 
-export const makeCancelable = (promise) =>
-  proxify(promise, { isCanceled: false });
+export const cancelablePromise = (executor, options) => {
+  return makeCancelable(new Promise(executor), options);
+};
 
 export class CancelablePromise {
-  static all(iterable) {
-    return makeCancelable(Promise.all(iterable));
+  static all(iterable, options) {
+    return makeCancelable(Promise.all(iterable), options);
   }
 
-  static allSettled(iterable) {
-    return makeCancelable(Promise.allSettled(iterable));
+  static allSettled(iterable, options) {
+    return makeCancelable(Promise.allSettled(iterable), options);
   }
 
-  static race(iterable) {
-    return makeCancelable(Promise.race(iterable));
+  static race(iterable, options) {
+    return makeCancelable(Promise.race(iterable), options);
   }
 
-  static reject(value) {
-    return makeCancelable(Promise.reject(value));
+  static reject(value, options) {
+    return makeCancelable(Promise.reject(value), options);
   }
 
-  static resolve(value) {
-    return makeCancelable(Promise.resolve(value));
+  static resolve(value, options) {
+    return makeCancelable(Promise.resolve(value), options);
   }
 
-  constructor(executor) {
-    const promise = cancelablePromise(executor);
+  constructor(executor, options) {
+    const promise = cancelablePromise(executor, options);
     this.then = promise.then;
     this.catch = promise.catch;
     this.finally = promise.finally;

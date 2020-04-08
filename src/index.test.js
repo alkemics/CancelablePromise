@@ -1,3 +1,4 @@
+import AbortController from 'abort-controller';
 import { CancelablePromise, cancelablePromise, makeCancelable } from '.';
 
 const delay = async (timeout = 0, callback) => {
@@ -147,6 +148,49 @@ test('Cancel root promise', async () => {
   promise2.then(callback);
   await delay(10);
   expect(callback).toHaveBeenCalledTimes(0);
+});
+
+test('Cancel should abort controller', async () => {
+  const controller = new AbortController();
+  const abortSpy = jest.spyOn(controller, 'abort');
+  const promise = cancelablePromise((resolve) => resolve(), { controller });
+  promise.cancel();
+  await delay(1);
+  expect(abortSpy).toHaveBeenCalledTimes(1);
+});
+
+test('Cancel should abort controller list', async () => {
+  const controller = [new AbortController(), new AbortController()];
+  const abortSpies = controller.map((c) => jest.spyOn(c, 'abort'));
+  const promise = cancelablePromise((resolve) => resolve(), { controller });
+  promise.cancel();
+  await delay(1);
+  for (const abortSpy of abortSpies) {
+    expect(abortSpy).toHaveBeenCalledTimes(1);
+  }
+});
+
+test('Abort controller should cancel promise', async () => {
+  const controller = new AbortController();
+  const signal = controller.signal;
+  const promise = cancelablePromise((resolve) => resolve(), { signal });
+  const cancelSpy = jest.spyOn(promise, 'cancel');
+  controller.abort();
+  await delay(1);
+  expect(cancelSpy).toHaveBeenCalledTimes(1);
+});
+
+test('Abort multiple controllers should cancel promise', async () => {
+  const controller1 = new AbortController();
+  const controller2 = new AbortController();
+  const promise = cancelablePromise((resolve) => resolve(), {
+    signal: [controller1.signal, controller2.signal],
+  });
+  const cancelSpy = jest.spyOn(promise, 'cancel');
+  controller1.abort();
+  controller2.abort();
+  await delay(1);
+  expect(cancelSpy).toHaveBeenCalledTimes(2);
 });
 
 test('Cancel a returned promise', async () => {
