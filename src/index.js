@@ -45,14 +45,7 @@ export function CancelablePromise(arg) {
     Object.prototype.toString.call(arg) === '[object Promise]'
       ? arg
       : new Promise(arg);
-  const cancelablePromise = proxify(promise);
-  if (this instanceof CancelablePromise) {
-    this.then = cancelablePromise.then;
-    this.catch = cancelablePromise.catch;
-    this.finally = cancelablePromise.finally;
-    this.cancel = cancelablePromise.cancel;
-  }
-  return cancelablePromise;
+  return proxify(promise);
 }
 
 CancelablePromise.all = (iterable) => proxify(Promise.all(iterable));
