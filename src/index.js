@@ -47,7 +47,10 @@ export function CancelablePromise(arg) {
       : new Promise(arg);
   const cancelablePromise = proxify(promise);
   if (this instanceof CancelablePromise) {
-    Object.assign(this, cancelablePromise);
+    this.then = cancelablePromise.then;
+    this.catch = cancelablePromise.catch;
+    this.finally = cancelablePromise.finally;
+    this.cancel = cancelablePromise.cancel;
   }
   return cancelablePromise;
 }
