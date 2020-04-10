@@ -1,5 +1,4 @@
-import AbortController from 'abort-controller';
-import { CancelablePromise, cancelablePromise, makeCancelable } from '.';
+import { CancelablePromise } from '.';
 
 const delay = async (timeout = 0, callback) => {
   await new Promise((resolve) => setTimeout(resolve, timeout));
@@ -8,19 +7,12 @@ const delay = async (timeout = 0, callback) => {
   }
 };
 
-describe('Resolve worflow', () => {
+describe('Fulfilled worflow', () => {
   const promises = [
     [
-      'cancelablePromise()',
+      'CancelablePromise()',
       () =>
-        cancelablePromise((resolve) => {
-          delay(1, resolve);
-        }),
-    ],
-    [
-      'makeCancelable()',
-      () =>
-        makeCancelable(
+        CancelablePromise(
           new Promise((resolve) => {
             delay(1, resolve);
           })
@@ -75,19 +67,12 @@ describe('Resolve worflow', () => {
   }
 });
 
-describe('Error worflow', () => {
+describe('Rejected worflow', () => {
   const promises = [
     [
-      'cancelablePromise()',
+      'CancelablePromise()',
       () =>
-        cancelablePromise((resolve, reject) => {
-          delay(1, () => reject(new Error('cancelable promise error')));
-        }),
-    ],
-    [
-      'makeCancelable()',
-      () =>
-        makeCancelable(
+        CancelablePromise(
           new Promise((resolve, reject) => {
             delay(1, () => reject(new Error('native promise error')));
           })
@@ -139,10 +124,12 @@ describe('Error worflow', () => {
 
 test('Cancel root promise', async () => {
   const callback = jest.fn();
-  const promise1 = cancelablePromise((resolve) => {
-    delay(1, () => promise1.cancel());
-    delay(2, resolve);
-  });
+  const promise1 = CancelablePromise(
+    new Promise((resolve) => {
+      delay(1, () => promise1.cancel());
+      delay(2, resolve);
+    })
+  );
   const promise2 = promise1.then(callback);
   promise1.then(callback).then(callback);
   promise2.then(callback);
@@ -150,54 +137,13 @@ test('Cancel root promise', async () => {
   expect(callback).toHaveBeenCalledTimes(0);
 });
 
-test('Cancel should abort controller', async () => {
-  const controller = new AbortController();
-  const abortSpy = jest.spyOn(controller, 'abort');
-  const promise = cancelablePromise((resolve) => resolve(), { controller });
-  promise.cancel();
-  await delay(1);
-  expect(abortSpy).toHaveBeenCalledTimes(1);
-});
-
-test('Cancel should abort controller list', async () => {
-  const controller = [new AbortController(), new AbortController()];
-  const abortSpies = controller.map((c) => jest.spyOn(c, 'abort'));
-  const promise = cancelablePromise((resolve) => resolve(), { controller });
-  promise.cancel();
-  await delay(1);
-  for (const abortSpy of abortSpies) {
-    expect(abortSpy).toHaveBeenCalledTimes(1);
-  }
-});
-
-test('Abort controller should cancel promise', async () => {
-  const controller = new AbortController();
-  const signal = controller.signal;
-  const promise = cancelablePromise((resolve) => resolve(), { signal });
-  const cancelSpy = jest.spyOn(promise, 'cancel');
-  controller.abort();
-  await delay(1);
-  expect(cancelSpy).toHaveBeenCalledTimes(1);
-});
-
-test('Abort multiple controllers should cancel promise', async () => {
-  const controller1 = new AbortController();
-  const controller2 = new AbortController();
-  const promise = cancelablePromise((resolve) => resolve(), {
-    signal: [controller1.signal, controller2.signal],
-  });
-  const cancelSpy = jest.spyOn(promise, 'cancel');
-  controller1.abort();
-  controller2.abort();
-  await delay(1);
-  expect(cancelSpy).toHaveBeenCalledTimes(2);
-});
-
 test('Cancel a returned promise', async () => {
   const callback = jest.fn();
-  const promise1 = cancelablePromise((resolve) => {
-    delay(1, resolve);
-  });
+  const promise1 = CancelablePromise(
+    new Promise((resolve) => {
+      delay(1, resolve);
+    })
+  );
   const promise2 = promise1.then(() => {
     callback();
     delay(1, () => promise2.cancel());
@@ -211,15 +157,29 @@ test('Cancel a returned promise', async () => {
 
 test('Cancel a rejected promise', async () => {
   const callback = jest.fn();
-  const promise1 = cancelablePromise((resolve, reject) => {
-    delay(1, () => promise1.cancel());
-    delay(2, reject);
-  });
+  const promise1 = CancelablePromise(
+    new Promise((resolve, reject) => {
+      delay(1, () => promise1.cancel());
+      delay(2, reject);
+    })
+  );
   const promise2 = promise1.catch(callback);
   promise1.then(callback, callback).then(callback);
   promise2.then(callback);
   await delay(10);
   expect(callback).toHaveBeenCalledTimes(0);
+});
+
+test('Cancel a promise but finally should be still executed', async () => {
+  const callback = jest.fn();
+  const promise = CancelablePromise(
+    new Promise((resolve) => {
+      delay(2, resolve);
+    })
+  ).finally(callback);
+  promise.cancel();
+  await delay(3);
+  expect(callback).toHaveBeenCalledTimes(1);
 });
 
 test('CancelablePromise.resolve()', async () => {

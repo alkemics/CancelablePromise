@@ -19,12 +19,8 @@ FYI, you can cancel a fetch request with AbortController & AbortSignal.
 - [Install](#install)
 - [Usage](#usage)
   - [Basic example](#basic-example)
-  - [Delegate abort AbortController](#delegate-abort-abortcontroller)
-  - [Cancel promise with AbortController](#cancel-promise-with-abortcontroller)
 - [API](#api)
-  - [cancelablePromise](#cancelablepromise)
-  - [makeCancelable](#makecancelable)
-  - [CancelablePromise constructor](#cancelablepromise-constructor)
+  - [CancelablePromise](#cancelablepromise)
   - [Static methods](#static-methods)
 - [Scripts](#scripts)
   - [Build](#build)
@@ -45,12 +41,16 @@ npm install --save cancelable-promise
 
 CancelablePromise acts like an ES Promise: you can use `Promise.all`, `Promise.race` with your CancelablePromise for example. The only difference is you'll have a `cancel` method on your promise to cancel future execution of `then` or `catch` functions. CancelablePromise will also cancel all callbacks attached to new promises returned by `then`/`catch`.
 
+**A callback passed to `finally` will be always executed.**
+
 ### Basic example
 
 ```javascript
-import { cancelablePromise, makeCancelable } from 'cancelable-promise';
+import CancelablePromise from 'cancelable-promise';
 
-const promise = cancelablePromise((resolve) => setTimeout(resolve, 1))
+const promise = CancelablePromise(
+  new Promise((resolve) => setTimeout(resolve, 1))
+)
   .then(() => console.log('not logged'))
   .then(() => console.log('not logged'));
 
@@ -58,116 +58,35 @@ promise.cancel();
 // Nothing will be logged
 ```
 
-### Delegate abort AbortController
-
-```javascript
-import { makeCancelable } from 'cancelable-promise';
-
-const controller = new AbortController();
-const signal = controller.signal;
-const promise = makeCancelable(fetch('url', { signal }), { controller });
-// canceling the promise will abort the controller
-promise.cancel();
-```
-
-```javascript
-import { CancelablePromise } from 'cancelable-promise';
-
-const controller1 = new AbortController();
-const controller2 = new AbortController();
-const promise = CancelablePromise.all(
-  [
-    fetch('url1', { signal: controller1.signal }),
-    fetch('url2', { signal: controller2.signal }),
-  ],
-  { controller: [controller1, controller2] }
-);
-// canceling the promise will abort these controllers
-promise.cancel();
-```
-
-### Cancel promise with AbortController
-
-```javascript
-import { cancelablePromise } from 'cancelable-promise';
-
-const controller = new AbortController();
-const signal = controller.signal;
-const promise = makeCancelable(fetch('url', { signal }), { signal });
-// aborting the controller will cancel the promise
-controller.abort();
-```
-
 ## API
 
-### cancelablePromise
+### CancelablePromise
 
 ```javascript
-import { cancelablePromise } from 'cancelable-promise';
-
 /**
- * cancelablePromise
- *
- * @param {(resolve, reject) => void} executor - same as Promise(executor)
- * @param {Object} options - optional
- * @param {AbortController | AbortControler[]} options.controler
- * @param {AbortSignal | AbortSignal[]} options.signal
+ * @param {(resolve, reject) => void | Promise} arg - an executor or a Promise
  * @returns {CancelablePromise}
  */
+import CancelablePromise from 'cancelable-promise';
 
-const promise = cancelablePromise(
-  (resolve, reject) => {
+CancelablePromise((resolve, reject) => {
+  resolve('ok');
+});
+
+CancelablePromise(
+  new Promise((resolve, reject) => {
     resolve('ok');
-  },
-  { controller, signal }
+  })
 );
-```
 
-### makeCancelable
+new CancelablePromise((resolve, reject) => {
+  resolve('ok');
+});
 
-```javascript
-import { cancelablePromise } from 'cancelable-promise';
-
-/**
- * makeCancelable
- *
- * @param {Promise} promise - native promise as 1st arg
- * @param {Object} options - optional
- * @param {AbortController | AbortControler[]} options.controler
- * @param {AbortSignal | AbortSignal[]} options.signal
- * @returns {CancelablePromise}
- */
-
-const promise = makeCancelable(
-  new Promise(
-    (resolve, reject) => {
-      resolve('ok');
-    },
-    { controller, signal }
-  )
-);
-```
-
-### CancelablePromise constructor
-
-```javascript
-import { CancelablePromise } from 'cancelable-promise';
-
-/**
- * CancelablePromise constructor
- *
- * @param {(resolve, reject) => void} executor - same as Promise(executor)
- * @param {Object} options - optional
- * @param {AbortController | AbortControler[]} options.controler
- * @param {AbortSignal | AbortSignal[]} options.signal
- * @returns {CancelablePromise}
- */
-
-const promise = new CancelablePromise(
-  (resolve, reject) => {
+new CancelablePromise(
+  new Promise((resolve, reject) => {
     resolve('ok');
-  },
-  { controller, signal }
+  })
 );
 ```
 
@@ -176,14 +95,23 @@ const promise = new CancelablePromise(
 Same as Promise static methods.
 
 ```javascript
-import { CancelablePromise } from 'cancelable-promise';
+import CancelablePromise from 'cancelable-promise';
 
 CancelablePromise.resolve();
 CancelablePromise.reject();
-CancelablePromise.all([promise1, promise2], options);
-CancelablePromise.race([promise1, promise2], options);
-CancelablePromise.allSettled([promise1, promise2], options);
-// for options, see cancelablePromise or makeCancelable options
+CancelablePromise.all([promise1, promise2]);
+CancelablePromise.race([promise1, promise2]);
+CancelablePromise.allSettled([promise1, promise2]);
+```
+
+You can still use the native Promise API and wrap your promise:
+
+```javascript
+import CancelablePromise from 'cancelable-promise';
+
+CancelablePromise(Promise.all([promise1, promise2]));
+CancelablePromise(Promise.race([promise1, promise2]));
+CancelablePromise(Promise.allSettled([promise1, promise2]));
 ```
 
 ## Scripts

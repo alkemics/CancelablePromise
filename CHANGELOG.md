@@ -18,9 +18,9 @@ promise.cancel();
 
 ```javascript
 // CancelablePromise v3
-import { cancelablePromise } from 'cancelable-promise';
+import CancelablePromise from 'cancelable-promise';
 
-const promise = cancelablePromise((resolve) => setTimeout(resolve, 1))
+const promise = CancelablePromise((resolve) => setTimeout(resolve, 1))
   .then(() => console.log('callback2 executed'))
   .then(() => console.log('callback3 executed'));
 promise.cancel();
