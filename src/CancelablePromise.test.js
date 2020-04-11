@@ -1,4 +1,4 @@
-import { CancelablePromise } from '.';
+import { CancelablePromise } from './CancelablePromise';
 
 const delay = async (timeout = 0, callback) => {
   await new Promise((resolve) => setTimeout(resolve, timeout));

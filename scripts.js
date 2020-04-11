@@ -6,7 +6,7 @@ switch (arg) {
     fs.removeSync('dist');
     break;
   case 'copy':
-    fs.copySync('src/index.d.ts', 'dist/index.d.ts');
+    fs.copySync('src/CancelablePromise.d.ts', 'dist/CancelablePromise.d.ts');
     break;
   default:
     throw new Error('Invalid script');

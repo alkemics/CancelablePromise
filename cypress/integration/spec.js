@@ -1,4 +1,4 @@
-import CancelablePromise from '../../dist';
+import CancelablePromise from '../../dist/CancelablePromise';
 
 const { expect } = global;
 

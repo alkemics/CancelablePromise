@@ -2,23 +2,23 @@
   "name": "cancelable-promise",
   "version": "3.0.0",
   "description": "A simple cancelable promise",
-  "main": "dist/index.js",
-  "jsnext:main": "src/index.js",
+  "main": "dist/CancelablePromise.js",
+  "jsnext:main": "src/CancelablePromise.js",
   "files": [
-    "dist/index.js",
-    "dist/index.d.ts",
-    "src/index.js",
-    "src/index.d.ts",
+    "dist/CancelablePromise.js",
+    "dist/CancelablePromise.d.ts",
+    "src/CancelablePromise.js",
+    "src/CancelablePromise.d.ts",
     "LICENSE",
     "README.md",
     "CODE_OF_CONDUCT.md"
   ],
   "scripts": {
-    "babel": "babel src/index.js -d dist",
-    "cypress": "cypress run --browser chrome --headless",
-    "build": "npm run clean && npm run babel && npm run copy",
+    "babel": "babel src/CancelablePromise.js -d dist",
+    "build": "npm run clean && npm run babel && npm run uglify && npm run copy",
     "clean": "node scripts.js clean",
     "copy": "node scripts.js copy",
+    "cypress": "cypress run --browser chrome --headless",
     "jest:rc": "jest --findRelatedTests",
     "jest": "jest",
     "lint:rc": "eslint --fix",
@@ -26,7 +26,8 @@
     "prepublish": "npm run build",
     "prettier:rc": "prettier --write",
     "prettier": "prettier --write .",
-    "test": "npm run lint && npm run jest"
+    "test": "npm run lint && npm run jest",
+    "uglify": "uglifyjs dist/CancelablePromise.js -c -m -o dist/CancelablePromise.min.js"
   },
   "repository": {
     "type": "git",
@@ -50,6 +51,7 @@
     "husky": "~4.2.3",
     "jest": "~25.2.7",
     "lint-staged": "~10.1.2",
-    "prettier": "~2.0.4"
+    "prettier": "~2.0.4",
+    "uglify-js": "~3.8.1"
   }
 }
