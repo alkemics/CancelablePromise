@@ -19,6 +19,8 @@ FYI, you can cancel a fetch request with AbortController & AbortSignal.
 - [Install](#install)
 - [Usage](#usage)
   - [Basic example](#basic-example)
+  - [NodeJS](#nodejs)
+  - [Browser](#browser)
 - [API](#api)
   - [CancelablePromise](#cancelablepromise)
   - [Static methods](#static-methods)
@@ -56,6 +58,23 @@ const promise = CancelablePromise(
 
 promise.cancel();
 // Nothing will be logged
+```
+
+### NodeJS
+
+```javascript
+const { CancelablePromise } = require('cancelable-promise');
+CancelablePromise((resolve) => resolve('ok'));
+```
+
+### Browser
+
+```html
+<script src="https://unpkg.com/cancelable-promise@3.0.0/dist/CancelablePromise.min.js"></script>
+<script>
+  const { CancelablePromise } = window.CancelablePromise;
+  CancelablePromise((resolve) => resolve('ok'));
+</script>
 ```
 
 ## API

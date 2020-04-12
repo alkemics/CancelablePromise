@@ -126,13 +126,13 @@ test('Cancel root promise', async () => {
   const callback = jest.fn();
   const promise1 = CancelablePromise(
     new Promise((resolve) => {
-      delay(1, () => promise1.cancel());
-      delay(2, resolve);
+      delay(1, resolve);
     })
   );
   const promise2 = promise1.then(callback);
   promise1.then(callback).then(callback);
   promise2.then(callback);
+  promise1.cancel();
   await delay(10);
   expect(callback).toHaveBeenCalledTimes(0);
 });
@@ -144,25 +144,22 @@ test('Cancel a returned promise', async () => {
       delay(1, resolve);
     })
   );
-  const promise2 = promise1.then(() => {
-    callback();
-    delay(1, () => promise2.cancel());
-    return delay(2);
-  });
-  promise1.then(() => delay(2)).then(callback);
+  const promise2 = promise1.then(callback);
+  promise1.then(callback).then(callback);
   promise2.then(callback);
+  promise2.cancel();
   await delay(10);
-  expect(callback).toHaveBeenCalledTimes(1);
+  expect(callback).toHaveBeenCalledTimes(0);
 });
 
 test('Cancel a rejected promise', async () => {
   const callback = jest.fn();
   const promise1 = CancelablePromise(
     new Promise((resolve, reject) => {
-      delay(1, () => promise1.cancel());
-      delay(2, reject);
+      reject();
     })
   );
+  promise1.cancel();
   const promise2 = promise1.catch(callback);
   promise1.then(callback, callback).then(callback);
   promise2.then(callback);
@@ -174,11 +171,11 @@ test('Cancel a promise but finally should be still executed', async () => {
   const callback = jest.fn();
   const promise = CancelablePromise(
     new Promise((resolve) => {
-      delay(2, resolve);
+      delay(1, resolve);
     })
   ).finally(callback);
   promise.cancel();
-  await delay(3);
+  await delay(10);
   expect(callback).toHaveBeenCalledTimes(1);
 });
 
@@ -204,21 +201,21 @@ describe('CancelablePromise.all()', () => {
   it('should resolve', async () => {
     const callback = jest.fn();
     const promise = CancelablePromise.all([
-      CancelablePromise.resolve('ok'),
-      delay(1, () => 'yes'),
+      Promise.resolve('ok1'),
+      delay(1, () => 'ok2'),
     ]).then(callback);
     await promise;
     expect(callback).toHaveBeenCalledTimes(1);
-    expect(callback).toHaveBeenCalledWith(['ok', 'yes']);
+    expect(callback).toHaveBeenCalledWith(['ok1', 'ok2']);
   });
 
   it('should cancel', async () => {
     const callback = jest.fn();
     const promise = CancelablePromise.all([
       CancelablePromise.resolve(),
-      delay(1, () => promise.cancel()),
-    ]);
-    promise.then(callback);
+      delay(1),
+    ]).then(callback);
+    promise.cancel();
     await delay(10);
     expect(callback).toHaveBeenCalledTimes(0);
   });
@@ -246,9 +243,9 @@ describe('CancelablePromise.allSettled()', () => {
     const promise = CancelablePromise.allSettled([
       CancelablePromise.resolve(),
       CancelablePromise.reject(),
-      delay(1, () => promise.cancel()),
-    ]);
-    promise.then(callback);
+      delay(1),
+    ]).then(callback);
+    promise.cancel();
     await delay(10);
     expect(callback).toHaveBeenCalledTimes(0);
   });
@@ -269,10 +266,10 @@ describe('CancelablePromise.race()', () => {
   it('should cancel', async () => {
     const callback = jest.fn();
     const promise = CancelablePromise.race([
-      delay(2),
-      delay(1, () => promise.cancel()),
-    ]);
-    promise.then(callback);
+      new Promise(() => {}),
+      delay(1),
+    ]).then(callback);
+    promise.cancel();
     await delay(10);
     expect(callback).toHaveBeenCalledTimes(0);
   });

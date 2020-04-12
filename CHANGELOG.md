@@ -1,7 +1,7 @@
 ## 3.0.0 (2020-04-07)
 
-Complete rewrite of `CancelablePromise`.
-Now promises returned from `Promise` API such as `then` or `catch` can cancel the root promise and all promises created from this root promise:
+- Complete rewrite of `CancelablePromise`.
+  Now promises returned from `Promise` API such as `then` or `catch` can cancel the root promise and all promises created from this root promise:
 
 ```javascript
 // CancelablePromise v2
@@ -26,3 +26,14 @@ const promise = CancelablePromise((resolve) => setTimeout(resolve, 1))
 promise.cancel();
 // no logs
 ```
+
+- `CancelablePromise` can be used without `new` and/or with a `Promise` as argument
+
+```javascript
+new CancelablePromise((resolve) => setTimeout(resolve, 1));
+new CancelablePromise(new Promise((resolve) => setTimeout(resolve, 1)));
+CancelablePromise((resolve) => setTimeout(resolve, 1));
+CancelablePromise(new Promise((resolve) => setTimeout(resolve, 1)));
+```
+
+- UMD module, `CancelablePromise` can be loaded in browser
