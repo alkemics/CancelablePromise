@@ -57,15 +57,10 @@ interface CancelablePromiseType<T> {
     onfinally?: (() => void) | undefined | null
   ): CancelablePromiseType<T>;
 
-  cancel(onCancel: () => void): void;
+  cancel(): void;
 }
 
 interface CancelablePromiseConstructor {
-  /**
-   * A reference to the prototype.
-   */
-  readonly prototype: CancelablePromiseType<any>;
-
   /**
    * Creates a new Promise.
    * @param executor A callback used to initialize the promise. This callback is passed two arguments:
@@ -74,6 +69,9 @@ interface CancelablePromiseConstructor {
    */
   new <T1>(
     executorOrPromise: PromiseExecutor<T1> | PromiseLike<T>
+  ): CancelablePromiseType<T1>;
+  <T1>(
+    executorOrPromise: PromiseExecutor<T1> | PromiseLike<T1>
   ): CancelablePromiseType<T1>;
 
   /**
