@@ -3,9 +3,8 @@ module.exports = {
     [
       '@babel/preset-env',
       {
-        targets: {
-          browsers: ['>0.25%', 'IE >= 11'],
-        },
+        targets: { browsers: ['>0.25%', 'IE >= 11'] },
+        modules: 'umd',
       },
     ],
   ],
