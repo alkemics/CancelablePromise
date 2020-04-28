@@ -31,12 +31,17 @@ function cancelFunc(options) {
   options.isCanceled = true;
 }
 
+function isCanceled(options) {
+  return options.isCanceled;
+}
+
 export function cancelable(promise, options = { isCanceled: false }) {
   return {
     then: thenFunc.bind(promise, options),
     catch: catchFunc.bind(promise, options),
     finally: finallyFunc.bind(promise, options),
     cancel: cancelFunc.bind(promise, options),
+    isCanceled: isCanceled.bind(promise, options),
   };
 }
 

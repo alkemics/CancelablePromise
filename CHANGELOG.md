@@ -1,4 +1,9 @@
-## 3.0.0 (2020-04-07)
+## [3.1.0](https://github.com/alkemics/CancelablePromise/releases/tag/v3.1.0) (2020-04-28)
+
+- upgrade dev dependencies
+- add `isCanceled` method to cancelable promises
+
+## [3.0.0](https://github.com/alkemics/CancelablePromise/releases/tag/v3.0.0) (2020-04-07)
 
 - Complete rewrite of `CancelablePromise`.
   Now promises returned from `Promise` API such as `then` or `catch` can cancel the root promise and all promises created from this root promise:

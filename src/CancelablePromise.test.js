@@ -132,7 +132,9 @@ test('Cancel root promise', async () => {
   const promise2 = promise1.then(callback);
   promise1.then(callback).then(callback);
   promise2.then(callback);
+  expect(promise1.isCanceled()).toBe(false);
   promise1.cancel();
+  expect(promise1.isCanceled()).toBe(true);
   await delay(10);
   expect(callback).toHaveBeenCalledTimes(0);
 });
@@ -147,7 +149,9 @@ test('Cancel a returned promise', async () => {
   const promise2 = promise1.then(callback);
   promise1.then(callback).then(callback);
   promise2.then(callback);
+  expect(promise2.isCanceled()).toBe(false);
   promise2.cancel();
+  expect(promise2.isCanceled()).toBe(true);
   await delay(10);
   expect(callback).toHaveBeenCalledTimes(0);
 });

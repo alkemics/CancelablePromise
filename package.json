@@ -1,6 +1,6 @@
 {
   "name": "cancelable-promise",
-  "version": "3.0.0",
+  "version": "3.1.0",
   "description": "A simple cancelable promise",
   "main": "dist/CancelablePromise.js",
   "jsnext:main": "src/CancelablePromise.js",
@@ -47,13 +47,13 @@
     "@babel/preset-env": "~7.9.0",
     "babel-eslint": "~10.1.0",
     "core-js": "~3.6.4",
-    "cypress": "~4.4.0",
+    "cypress": "~4.4.1",
     "eslint": "~6.8.0",
     "fs-extra": "~9.0.0",
     "husky": "~4.2.3",
-    "jest": "~25.3.0",
-    "lint-staged": "~10.1.2",
-    "prettier": "~2.0.4",
+    "jest": "~25.4.0",
+    "lint-staged": "~10.1.7",
+    "prettier": "~2.0.5",
     "uglify-js": "~3.9.1"
   }
 }
