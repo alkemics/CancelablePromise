@@ -58,6 +58,8 @@ interface CancelablePromiseType<T> {
   ): CancelablePromiseType<T>;
 
   cancel(): void;
+
+  isCanceled(): boolean;
 }
 
 interface CancelablePromiseConstructor {

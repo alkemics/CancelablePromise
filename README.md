@@ -24,6 +24,8 @@ FYI, you can cancel a fetch request with AbortController & AbortSignal.
 - [API](#api)
   - [cancelable](#cancelable)
   - [CancelablePromise](#cancelablepromise)
+  - [CancelablePromise.cancel](#cancelablepromisecancel)
+  - [CancelablePromise.isCanceled](#cancelablepromiseiscanceled)
   - [Static methods](#static-methods)
 - [Scripts](#scripts)
   - [Build](#build)
@@ -110,6 +112,24 @@ import CancelablePromise from 'cancelable-promise';
 new CancelablePromise((resolve, reject) => {
   resolve('ok');
 });
+```
+
+### CancelablePromise.cancel
+
+```javascript
+/**
+ * @returns {void}
+ */
+cancelablePromise.cancel();
+```
+
+### CancelablePromise.isCanceled
+
+```javascript
+/**
+ * @returns {boolean}
+ */
+cancelablePromise.isCanceled();
 ```
 
 ### Static methods

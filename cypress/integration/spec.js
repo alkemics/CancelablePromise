@@ -34,7 +34,9 @@ describe('cancelable promise', () => {
     const promise = new CancelablePromise((resolve) => {
       resolve(42);
     }).then(stub);
+    expect(promise.isCanceled()).to.be.false;
     promise.cancel();
+    expect(promise.isCanceled()).to.be.true;
     cy.wait(1).then(() => {
       expect(stub).not.to.be.called;
     });
@@ -45,7 +47,9 @@ describe('cancelable promise', () => {
     const promise = new CancelablePromise((resolve, reject) => {
       reject(42);
     }).catch(stub);
+    expect(promise.isCanceled()).to.be.false;
     promise.cancel();
+    expect(promise.isCanceled()).to.be.true;
     cy.wait(1).then(() => {
       expect(stub).not.to.be.called;
     });
