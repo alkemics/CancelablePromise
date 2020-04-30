@@ -17,7 +17,7 @@ type PromiseSettledResult<T> =
   | PromiseFulfilledResult<T>
   | PromiseRejectedResult;
 
-interface CancelablePromiseType<T> {
+export interface CancelablePromiseType<T> {
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -62,7 +62,7 @@ interface CancelablePromiseType<T> {
   isCanceled(): boolean;
 }
 
-interface CancelablePromiseConstructor {
+export interface CancelablePromiseConstructor {
   /**
    * Creates a new Promise.
    * @param executor A callback used to initialize the promise. This callback is passed two arguments:
