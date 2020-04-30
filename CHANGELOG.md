@@ -1,3 +1,8 @@
+## [3.1.1](https://github.com/alkemics/CancelablePromise/releases/tag/v3.1.1) (2020-05-01)
+
+- export CancelablePromiseType and CancelablePromiseConstructor types
+- upgrade dev dependencies
+
 ## [3.1.0](https://github.com/alkemics/CancelablePromise/releases/tag/v3.1.0) (2020-04-28)
 
 - upgrade dev dependencies
