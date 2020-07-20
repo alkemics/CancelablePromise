@@ -1,6 +1,6 @@
 {
   "name": "cancelable-promise",
-  "version": "3.1.1",
+  "version": "3.1.2",
   "description": "A simple cancelable promise",
   "main": "dist/CancelablePromise.js",
   "jsnext:main": "src/CancelablePromise.js",
@@ -42,18 +42,18 @@
   },
   "homepage": "https://github.com/alkemics/CancelablePromise#readme",
   "devDependencies": {
-    "@babel/cli": "~7.8.4",
-    "@babel/core": "~7.9.6",
-    "@babel/preset-env": "~7.9.6",
+    "@babel/cli": "~7.10.5",
+    "@babel/core": "~7.10.5",
+    "@babel/preset-env": "~7.10.4",
     "babel-eslint": "~10.1.0",
     "core-js": "~3.6.4",
-    "cypress": "~4.5.0",
-    "eslint": "~6.8.0",
-    "fs-extra": "~9.0.0",
+    "cypress": "~4.10.0",
+    "eslint": "~7.5.0",
+    "fs-extra": "~9.0.1",
     "husky": "~4.2.3",
-    "jest": "~25.5.3",
-    "lint-staged": "~10.2.1",
+    "jest": "~26.1.0",
+    "lint-staged": "~10.2.11",
     "prettier": "~2.0.5",
-    "uglify-js": "~3.9.1"
+    "uglify-js": "~3.10.0"
   }
 }
