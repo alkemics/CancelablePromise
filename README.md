@@ -46,8 +46,6 @@ npm install --save cancelable-promise
 
 CancelablePromise acts like an ES Promise: you can use `Promise.all`, `Promise.race` with your CancelablePromise for example. The only difference is you'll have a `cancel` method on your promise to cancel future execution of `then` or `catch` functions. CancelablePromise will also cancel all callbacks attached to new promises returned by `then`/`catch`.
 
-**A callback passed to `finally` will be always executed.**
-
 ### Basic example
 
 ```javascript

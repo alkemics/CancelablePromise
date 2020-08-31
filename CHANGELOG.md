@@ -1,3 +1,7 @@
+## [3.1.3](https://github.com/alkemics/CancelablePromise/releases/tag/v3.1.3) (2020-08-31)
+
+- upgrade dev dependencies
+
 ## [3.1.2](https://github.com/alkemics/CancelablePromise/releases/tag/v3.1.2) (2020-07-20)
 
 - upgrade dev dependencies
