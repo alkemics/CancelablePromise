@@ -9,44 +9,87 @@ function createCallback(onResult, options) {
   }
 }
 
-function thenFunc(options, onSuccess, onError) {
-  return cancelable(
-    this.then(
-      createCallback(onSuccess, options),
-      createCallback(onError, options)
-    ),
-    options
-  );
-}
+function makeCancelable(promise, options) {
+  const methods = {
+    then(onSuccess, onError) {
+      return makeCancelable(
+        promise.then(
+          createCallback(onSuccess, options),
+          createCallback(onError, options)
+        ),
+        options
+      );
+    },
 
-function catchFunc(options, onError) {
-  return cancelable(this.catch(createCallback(onError, options)), options);
-}
+    catch(onError) {
+      return makeCancelable(
+        promise.catch(createCallback(onError, options)),
+        options
+      );
+    },
 
-function finallyFunc(options, onFinally) {
-  return cancelable(this.finally(onFinally), options);
-}
+    finally(onFinally, runWhenCanceled) {
+      if (runWhenCanceled) {
+        if (!options.finallyList) {
+          options.finallyList = [];
+        }
+        options.finallyList.push(onFinally);
+      }
+      return makeCancelable(
+        promise.finally(() => {
+          if (runWhenCanceled) {
+            options.finallyList = options.finallyList.filter(
+              (callback) => callback !== onFinally
+            );
+          }
+          return onFinally();
+        }),
+        options
+      );
+    },
 
-function cancelFunc(options) {
-  options.isCanceled = true;
-}
+    cancel() {
+      options.isCanceled = true;
+      for (const callbacks of [options.onCancelList, options.finallyList]) {
+        if (callbacks) {
+          while (callbacks.length) {
+            const onCancel = callbacks.shift();
+            if (typeof onCancel === 'function') {
+              onCancel();
+            }
+          }
+        }
+      }
+    },
 
-function isCanceled(options) {
-  return options.isCanceled;
-}
+    isCanceled() {
+      return options.isCanceled === true;
+    },
+  };
 
-export function cancelable(promise, options = { isCanceled: false }) {
   return {
-    then: thenFunc.bind(promise, options),
-    catch: catchFunc.bind(promise, options),
-    finally: finallyFunc.bind(promise, options),
-    cancel: cancelFunc.bind(promise, options),
-    isCanceled: isCanceled.bind(promise, options),
+    then: methods.then.bind(undefined),
+    catch: methods.catch.bind(undefined),
+    finally: methods.finally.bind(undefined),
+    cancel: methods.cancel.bind(undefined),
+    isCanceled: methods.isCanceled.bind(undefined),
   };
 }
 
+export function cancelable(promise) {
+  return makeCancelable(promise, {});
+}
+
 export function CancelablePromise(executor) {
-  return cancelable(new Promise(executor));
+  const onCancelList = [];
+  return makeCancelable(
+    new Promise((resolve, reject) => {
+      return executor(resolve, reject, (onCancel) => {
+        onCancelList.push(onCancel);
+      });
+    }),
+    { onCancelList }
+  );
 }
 
 CancelablePromise.all = (iterable) => cancelable(Promise.all(iterable));

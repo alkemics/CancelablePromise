@@ -1,3 +1,55 @@
+## [3.2.0](https://github.com/alkemics/CancelablePromise/releases/tag/v3.2.0) (2020-10-10)
+
+- feature: execute onCancel or finally callback when promise is canceled
+
+```javascript
+import CancelablePromise from 'cancelable-promise';
+
+const promise = new CancelablePromise((resolve, reject, onCancel) => {
+  const worker = new Worker('some-script.js');
+
+  onCancel(() => {
+    worker.terminate();
+  });
+
+  worker.onmessage = (event) => resolve(event.data);
+  worker.onerror = (error) => reject(error);
+});
+
+promise.cancel(); // It will execute the callback passed to onCancel
+```
+
+```javascript
+let worker;
+const promise = cancelable(
+  new Promise((resolve, reject) => {
+    worker = new Worker('some-script.js');
+    worker.onmessage = (event) => {
+      resolve(event.data); // never executed
+    };
+    worker.onerror = (error) => {
+      reject(error); // never executed
+    };
+  })
+)
+  .then(() => {
+    console.log('never logged');
+  })
+  .finally(
+    () => {
+      console.log('executed');
+      if (worker) {
+        worker.terminate();
+        worker = null;
+      }
+    },
+    // runWhenCanceled boolean
+    true
+  );
+
+promise.cancel();
+```
+
 ## [3.1.3](https://github.com/alkemics/CancelablePromise/releases/tag/v3.1.3) (2020-08-31)
 
 - upgrade dev dependencies
