@@ -1,4 +1,10 @@
 {
+  "integrationFolder": "tests",
+  "testFiles": "**/*.spec.js",
+  "screenshotsFolder": "tests/screenshots",
+  "videosFolder": "tests/videos",
+  "screenshotOnRunFailure": false,
+  "video": false,
   "fixturesFolder": false,
   "pluginsFile": false,
   "supportFile": false

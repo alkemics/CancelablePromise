@@ -104,13 +104,24 @@ cancelable(
 import CancelablePromise from 'cancelable-promise';
 
 /**
- * @param {(resolve, reject) => void} arg - a promise executor
+ * @param {(resolve, reject, onCancel) => void} arg - an augmented promise executor
  * @returns {CancelablePromise}
  */
-new CancelablePromise((resolve, reject) => {
-  resolve('ok');
+const promise = new CancelablePromise((resolve, reject, onCancel) => {
+  const worker = new Worker('some-script.js');
+
+  onCancel(() => {
+    worker.terminate();
+  });
+
+  worker.onmessage = (event) => resolve(event.data);
+  worker.onerror = (error) => reject(error);
 });
+
+promise.cancel(); // It will execute the callback passed to onCancel
 ```
+
+_`onCancel` callback is working as in [p-cancelable](https://github.com/sindresorhus/p-cancelable)_
 
 ### CancelablePromise.cancel
 
@@ -128,6 +139,48 @@ cancelablePromise.cancel();
  * @returns {boolean}
  */
 cancelablePromise.isCanceled();
+```
+
+### CancelablePromise.finally
+
+```javascript
+/**
+ * @param {() => void} onFinally callback
+ * @param {boolean} runWhenCanceled force finally execution on cancel
+ * @returns {void}
+ */
+cancelablePromise.finally(() => {});
+
+// You can release prematurely resources for a long running task
+// by forcing finnaly callback execution when cancelling a promise
+let worker;
+const promise = cancelable(
+  new Promise((resolve, reject) => {
+    worker = new Worker('some-script.js');
+    worker.onmessage = (event) => {
+      resolve(event.data); // never executed
+    };
+    worker.onerror = (error) => {
+      reject(error); // never executed
+    };
+  })
+)
+  .then(() => {
+    console.log('never logged');
+  })
+  .finally(
+    () => {
+      console.log('executed');
+      if (worker) {
+        worker.terminate();
+        worker = null;
+      }
+    },
+    // runWhenCanceled boolean
+    true
+  );
+
+promise.cancel();
 ```
 
 ### Static methods

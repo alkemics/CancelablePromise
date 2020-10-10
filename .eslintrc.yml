@@ -17,7 +17,7 @@ overrides:
     env:
       jest: true
   - files:
-      - 'cypress/**/*.js'
+      - '**/*.spec.js'
     env:
       mocha: true
     globals:

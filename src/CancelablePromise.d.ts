@@ -1,6 +1,7 @@
-type PromiseExecutor<T> = (
+type CancelablePromiseExecutor<T> = (
   resolve: (value?: T | PromiseLike<T>) => void,
-  reject: (reason?: any) => void
+  reject: (reason?: any) => void,
+  onCancel: (cancelHandler: () => void) => void
 ) => void;
 
 interface PromiseFulfilledResult<T> {
@@ -54,7 +55,8 @@ export interface CancelablePromiseType<T> {
    * @returns A Promise for the completion of the callback.
    */
   finally(
-    onfinally?: (() => void) | undefined | null
+    onfinally?: (() => void) | undefined | null,
+    runWhenCanceled?: boolean
   ): CancelablePromiseType<T>;
 
   cancel(): void;
@@ -69,8 +71,8 @@ export interface CancelablePromiseConstructor {
    * a resolve callback used to resolve the promise with a value or the result of another promise,
    * and a reject callback used to reject the promise with a provided reason or error.
    */
-  new <T1>(executorOrPromise: PromiseExecutor<T1>): CancelablePromiseType<T1>;
-  <T1>(executorOrPromise: PromiseExecutor<T1>): CancelablePromiseType<T1>;
+  new <T1>(executor: CancelablePromiseExecutor<T1>): CancelablePromiseType<T1>;
+  <T1>(executor: CancelablePromiseExecutor<T1>): CancelablePromiseType<T1>;
 
   /**
    * Creates a Promise that is resolved with an array of results when all of the provided Promises
