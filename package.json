@@ -3,6 +3,7 @@
   "version": "3.2.0",
   "description": "A simple cancelable promise",
   "main": "dist/CancelablePromise.js",
+  "types": "dist/CancelablePromise.d.ts",
   "jsnext:main": "src/CancelablePromise.js",
   "files": [
     "dist/CancelablePromise.js",
