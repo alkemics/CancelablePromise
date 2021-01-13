@@ -1,3 +1,7 @@
+## [3.2.2](https://github.com/alkemics/CancelablePromise/releases/tag/v3.2.2) (2021-01-13)
+
+- add types in package.json
+
 ## [3.2.0](https://github.com/alkemics/CancelablePromise/releases/tag/v3.2.0) (2020-10-10)
 
 - feature: execute onCancel or finally callback when promise is canceled
