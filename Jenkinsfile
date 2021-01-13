@@ -35,8 +35,19 @@ timestamps {
 
         stage('Publish') {
           run_or_skip(publish, {
-            nodejs.publish_release(repo_slug)
-            common.add_text_badge('published', 'success')
+            def diff_files = sh(
+              script: 'git --no-pager diff origin/master --name-only --diff-filter=d',
+              returnStdout: true
+            ).split('\n')
+            if (diff_files.contains('CHANGELOG.md')) {
+              def version = sh(
+                script: 'node scripts.js log_publish_version',
+                returnStdout: true
+              ).trim()
+              echo("Publish version ${version}")
+              nodejs.publish_release(repo_slug, version)
+              common.add_text_badge('published', 'success')
+            }
           })
         }
 
