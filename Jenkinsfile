@@ -41,7 +41,7 @@ timestamps {
             ).trim()
             if (version) {
               echo("Publish version ${version}")
-              nodejs.publish_release(repo_slug, version)
+              sh('npm publish')
               common.add_text_badge('published', 'success')
             }
           })

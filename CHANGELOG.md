@@ -1,4 +1,4 @@
-## [3.2.2](https://github.com/alkemics/CancelablePromise/releases/tag/v3.2.2) (2021-01-13)
+## [3.2.3](https://github.com/alkemics/CancelablePromise/releases/tag/v3.2.3) (2021-01-13)
 
 - add types in package.json
 
