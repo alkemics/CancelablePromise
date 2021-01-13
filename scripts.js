@@ -1,4 +1,5 @@
 const fs = require('fs-extra');
+const { execSync } = require('child_process');
 const semver = require('semver');
 const arg = process.argv.slice(2)[0];
 
@@ -20,7 +21,9 @@ function logVersionToPublish() {
   const changelog = fs.readFileSync('CHANGELOG.md').toString();
   const match = /(?<version>\d+\.\d+\.\d+)/.exec(changelog);
   const { version } = match.groups;
-  const currentVersion = require('./package.json').version;
+  const currentVersion = execSync('npm view cancelable-promise version')
+    .toString()
+    .trim();
   if (semver.valid(version) && semver.gt(version, currentVersion)) {
     console.log(version);
   }
