@@ -1,4 +1,5 @@
 const fs = require('fs-extra');
+const semver = require('semver');
 const arg = process.argv.slice(2)[0];
 
 switch (arg) {
@@ -19,14 +20,8 @@ function logVersionToPublish() {
   const changelog = fs.readFileSync('CHANGELOG.md').toString();
   const match = /(?<version>\d+\.\d+\.\d+)/.exec(changelog);
   const { version } = match.groups;
-  if (!version) {
-    throw new Error(`Invalid version to publish: ${version}`);
-  }
   const currentVersion = require('./package.json').version;
-  if (version === currentVersion) {
-    throw new Error(
-      `Version to publish is equal to current package version: ${version}`
-    );
+  if (semver.valid(version) && semver.gt(version, currentVersion)) {
+    console.log(version);
   }
-  console.log(version);
 }
