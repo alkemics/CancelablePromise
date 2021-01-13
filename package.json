@@ -29,6 +29,9 @@
     "prepublish": "npm run build",
     "prettier:rc": "prettier --write",
     "prettier": "prettier --write .",
+    "release:major": "node scripts.js prepare_release major",
+    "release:minor": "node scripts.js prepare_release minor",
+    "release:patch": "node scripts.js prepare_release patch",
     "test": "npm run lint && npm run jest",
     "uglify": "uglifyjs dist/CancelablePromise.js -c -m -o dist/CancelablePromise.min.js"
   },
