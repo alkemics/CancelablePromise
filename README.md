@@ -1,6 +1,6 @@
 # cancelable-promise
 
-[![GitHub license](https://img.shields.io/github/license/alkemics/CancelablePromise)](https://github.com/alkemics/CancelablePromise/blob/master/LICENSE) [![npm version](https://img.shields.io/npm/v/cancelable-promise)](https://www.npmjs.com/package/cancelable-promise) [![Node.js CI](https://github.com/alkemics/CancelablePromise/workflows/Node.js%20CI/badge.svg?branch=master)](https://github.com/alkemics/CancelablePromise/actions?query=workflow%3A%22Node.js+CI%22) [![End-to-end tests](https://github.com/alkemics/CancelablePromise/workflows/End-to-end%20tests/badge.svg?branch=master)](https://github.com/alkemics/CancelablePromise/actions?query=workflow%3A%22End-to-end+tests%22) [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](https://github.com/alkemics/CancelablePromise/pulls)
+[![GitHub license](https://img.shields.io/github/license/alkemics/CancelablePromise)](https://github.com/alkemics/CancelablePromise/blob/master/LICENSE) [![npm version](https://img.shields.io/npm/v/cancelable-promise)](https://www.npmjs.com/package/cancelable-promise) [![Unit tests](https://github.com/alkemics/CancelablePromise/workflows/Unit%20tests/badge.svg?branch=master)](https://github.com/alkemics/CancelablePromise/actions?query=workflow%3A%22Unit+20tests%22) [![Cypress tests](https://github.com/alkemics/CancelablePromise/workflows/Cypress%20tests/badge.svg?branch=master)](https://github.com/alkemics/CancelablePromise/actions?query=workflow%3A%22Cypress+tests%22) [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](https://github.com/alkemics/CancelablePromise/pulls)
 
 A simple Cancelable Promise.
 
@@ -73,9 +73,16 @@ cancelable(new Promise((resolve) => resolve('ok')));
 ### Browser
 
 ```html
-<script src="https://unpkg.com/cancelable-promise@3.0.0/dist/CancelablePromise.min.js"></script>
+<script src="https://unpkg.com/cancelable-promise@3.3.0/umd/CancelablePromise.min.js"></script>
 <script>
   const { cancelable } = window.CancelablePromise;
+  cancelable(new Promise((resolve) => resolve('ok')));
+</script>
+```
+
+```html
+<script type="module">
+  import { cancelable } from 'https://unpkg.com/cancelable-promise@3.3.0/esm/CancelablePromise.min.mjs';
   cancelable(new Promise((resolve) => resolve('ok')));
 </script>
 ```
@@ -227,10 +234,10 @@ npm test
 
 ### End-to-end tests
 
-Run `cypress`
+Run `cypress` tests
 
 ```shell
-npm run cypress
+npm run test:e2e
 ```
 
 ## Contributing

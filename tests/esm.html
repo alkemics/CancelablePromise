@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Cancelable promise</title>
+  </head>
+  <body>
+    <script type="module">
+      import {
+        cancelable,
+        CancelablePromise,
+      } from '/esm/CancelablePromise.min.mjs';
+      window.CancelablePromise = CancelablePromise;
+      window.cancelable = cancelable;
+      fetch('/ok');
+    </script>
+  </body>
+</html>

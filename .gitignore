@@ -27,7 +27,8 @@ build/Release
 node_modules
 
 # Compile dir
-dist/
+umd/
+esm/
 
 tests/screenshots
 tests/videos
