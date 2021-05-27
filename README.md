@@ -73,7 +73,7 @@ cancelable(new Promise((resolve) => resolve('ok')));
 ### Browser
 
 ```html
-<script src="https://unpkg.com/cancelable-promise@3.3.0/umd/CancelablePromise.min.js"></script>
+<script src="https://unpkg.com/cancelable-promise@4.0.0/umd/CancelablePromise.min.js"></script>
 <script>
   const { cancelable } = window.CancelablePromise;
   cancelable(new Promise((resolve) => resolve('ok')));
@@ -82,7 +82,7 @@ cancelable(new Promise((resolve) => resolve('ok')));
 
 ```html
 <script type="module">
-  import { cancelable } from 'https://unpkg.com/cancelable-promise@3.3.0/esm/CancelablePromise.min.mjs';
+  import { cancelable } from 'https://unpkg.com/cancelable-promise@4.0.0/esm/CancelablePromise.min.mjs';
   cancelable(new Promise((resolve) => resolve('ok')));
 </script>
 ```

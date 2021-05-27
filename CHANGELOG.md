@@ -1,7 +1,24 @@
 ## [4.0.0](https://github.com/alkemics/CancelablePromise/releases/tag/4.0.0) (2021-05-27)
 
-- Merge pull request #40 from sebastiendavid/esm
 - Update dependencies and add esm module
+
+**[Breaking change]**
+
+No more `dist` folder, you will find releases in `umd` and `esm` fodlers.
+
+```diff
+- https://unpkg.com/cancelable-promise@3.0.0/dist/CancelablePromise.min.js
++ https://unpkg.com/cancelable-promise@4.0.0/umd/CancelablePromise.min.js
++ https://unpkg.com/cancelable-promise@4.0.0/esm/CancelablePromise.min.js
+```
+
+**[Feature]** ESM module
+
+```html
+<script type="module">
+  import { cancelable } from 'https://unpkg.com/cancelable-promise@4.0.0/esm/CancelablePromise.min.mjs';
+</script>
+```
 
 ## [3.2.3](https://github.com/alkemics/CancelablePromise/releases/tag/v3.2.3) (2021-01-13)
 
