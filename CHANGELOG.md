@@ -1,4 +1,4 @@
-## [4.0.0](https://github.com/alkemics/CancelablePromise/releases/tag/4.0.0) (2021-05-27)
+## [4.0.0](https://github.com/alkemics/CancelablePromise/releases/tag/v4.0.0) (2021-05-27)
 
 - Update dependencies and add esm module
 

@@ -51,7 +51,7 @@ async function prepareRelease() {
   const currentVersion = require('./package.json').version;
   const newVersion = semver.inc(currentVersion, arg || 'patch');
   const { date } = /(?<date>\d+-\d+-\d+)/.exec(new Date().toISOString()).groups;
-  const url = `https://github.com/alkemics/CancelablePromise/releases/tag/${newVersion}`;
+  const url = `https://github.com/alkemics/CancelablePromise/releases/tag/v${newVersion}`;
   const { stdout } = await exec(
     `git log --oneline --pretty=format:'- %s' origin/master..HEAD`
   );
