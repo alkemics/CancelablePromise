@@ -1,3 +1,8 @@
+## [4.0.0](https://github.com/alkemics/CancelablePromise/releases/tag/4.0.0) (2021-05-27)
+
+- Merge pull request #40 from sebastiendavid/esm
+- Update dependencies and add esm module
+
 ## [3.2.3](https://github.com/alkemics/CancelablePromise/releases/tag/v3.2.3) (2021-01-13)
 
 - add types in package.json
