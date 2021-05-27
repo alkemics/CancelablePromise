@@ -18,6 +18,7 @@ overrides:
       jest: true
   - files:
       - '**/*.spec.js'
+      - '**/*.expect.js'
     env:
       mocha: true
     globals:
