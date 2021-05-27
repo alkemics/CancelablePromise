@@ -4,7 +4,7 @@
 
 **[Breaking change]**
 
-No more `dist` folder, you will find releases in `umd` and `esm` fodlers.
+No more `dist` folder, you will find releases in `umd` and `esm` folders.
 
 ```diff
 - https://unpkg.com/cancelable-promise@3.0.0/dist/CancelablePromise.min.js
