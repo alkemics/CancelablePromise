@@ -63,13 +63,15 @@ ${commits}
 
 ${changelog}`;
   await fs.writeFile('CHANGELOG.md', changelog, { encoding: 'utf8' });
-  await exec('git add CHANGELOG.md');
-  await exec(
-    `git commit -m "[RELEASE] update changelog for v${newVersion}" --no-verify`
-  );
-  await exec(
-    `npm version --no-commit-hooks ${newVersion} -m '[RELEASE] v${newVersion}'`
-  );
+  if (!process.argv.includes('--no-commit')) {
+    await exec('git add CHANGELOG.md');
+    await exec(
+      `git commit -m "[RELEASE] update changelog for v${newVersion}" --no-verify`
+    );
+    await exec(
+      `npm version --no-commit-hooks ${newVersion} -m '[RELEASE] v${newVersion}'`
+    );
+  }
 }
 
 runScript().catch((err) => {
