@@ -278,3 +278,206 @@ describe('CancelablePromise.race()', () => {
     expect(callback).toHaveBeenCalledTimes(0);
   });
 });
+
+describe('Cancelable promises returned by executors', () => {
+  async function worflow({ withClass, withFail, withCatch }) {
+    const callback = jest.fn();
+    let promise1;
+
+    if (withClass) {
+      promise1 = new CancelablePromise((resolve, reject, onCancel) => {
+        callback('start p1');
+        const timer = setTimeout(() => {
+          callback('resolve p1');
+          if (withFail) {
+            reject();
+          } else {
+            resolve();
+          }
+        }, 5);
+        const abort = () => {
+          callback('abort p1');
+          clearTimeout(timer);
+        };
+        onCancel(abort);
+      });
+    } else {
+      promise1 = cancelable(
+        new Promise((resolve, reject) => {
+          callback('start p1');
+          delay(5, () => {
+            callback('resolve p1');
+            if (withFail) {
+              reject();
+            } else {
+              resolve();
+            }
+          });
+        })
+      );
+    }
+
+    let promise2 = promise1.then(
+      ...[
+        () => {
+          callback('then p2');
+          const promise3 = new CancelablePromise(
+            (resolve, reject, onCancel) => {
+              callback('start p3');
+              const timer = setTimeout(() => {
+                callback('resolve p3');
+                resolve();
+              }, 10);
+              const abort = () => {
+                callback('abort p3');
+                clearTimeout(timer);
+              };
+              onCancel(abort);
+            }
+          );
+          return promise3;
+        },
+        !withCatch &&
+          (() => {
+            callback('error p2');
+            const promise3 = new CancelablePromise(
+              (resolve, reject, onCancel) => {
+                callback('start p3');
+                const timer = setTimeout(() => {
+                  callback('resolve p3');
+                  resolve();
+                }, 10);
+                const abort = () => {
+                  callback('abort p3');
+                  clearTimeout(timer);
+                };
+                onCancel(abort);
+              }
+            );
+            return promise3;
+          }),
+      ].filter(Boolean)
+    );
+
+    if (withCatch) {
+      promise2 = promise2.catch(() => {
+        callback('catch p2');
+        const promise3 = new CancelablePromise((resolve, reject, onCancel) => {
+          callback('start p3');
+          const timer = setTimeout(() => {
+            callback('resolve p3');
+            resolve();
+          }, 10);
+          const abort = () => {
+            callback('abort p3');
+            clearTimeout(timer);
+          };
+          onCancel(abort);
+        });
+        return promise3;
+      });
+    }
+
+    promise2.then(() => {
+      callback('then done');
+    });
+
+    await delay(10, () => {
+      callback('cancel p2');
+      promise2.cancel();
+    });
+    await delay(20);
+    return callback;
+  }
+
+  it('should be canceled when fulfilled (with CancelablePromise)', async () => {
+    const callback = await worflow({ withClass: true, withFail: false });
+    expect(callback.mock.calls).toEqual([
+      ['start p1'],
+      ['resolve p1'],
+      ['then p2'],
+      ['start p3'],
+      ['cancel p2'],
+      ['abort p1'],
+      ['abort p3'],
+    ]);
+  });
+
+  it('should be canceled when rejected (with CancelablePromise)', async () => {
+    const callback = await worflow({
+      withClass: true,
+      withFail: true,
+      withCatch: false,
+    });
+    expect(callback.mock.calls).toEqual([
+      ['start p1'],
+      ['resolve p1'],
+      ['error p2'],
+      ['start p3'],
+      ['cancel p2'],
+      ['abort p1'],
+      ['abort p3'],
+    ]);
+  });
+
+  it('should be canceled when rejected and caught (with CancelablePromise)', async () => {
+    const callback = await worflow({
+      withClass: true,
+      withFail: true,
+      withCatch: true,
+    });
+    expect(callback.mock.calls).toEqual([
+      ['start p1'],
+      ['resolve p1'],
+      ['catch p2'],
+      ['start p3'],
+      ['cancel p2'],
+      ['abort p1'],
+      ['abort p3'],
+    ]);
+  });
+
+  it('should be canceled when fulfilled (with cancelable)', async () => {
+    const callback = await worflow({ withClass: false, withFail: false });
+    expect(callback.mock.calls).toEqual([
+      ['start p1'],
+      ['resolve p1'],
+      ['then p2'],
+      ['start p3'],
+      ['cancel p2'],
+      ['abort p3'],
+    ]);
+  });
+
+  it('should be canceled when rejected (with cancelable)', async () => {
+    const callback = await worflow({
+      withClass: false,
+      withFail: true,
+      withCatch: false,
+    });
+    expect(callback.mock.calls).toEqual([
+      ['start p1'],
+      ['resolve p1'],
+      ['error p2'],
+      ['start p3'],
+      ['cancel p2'],
+      ['abort p3'],
+    ]);
+  });
+
+  it('should be canceled when rejected and caught (with cancelable)', async () => {
+    const callback = await worflow({
+      withClass: false,
+      withFail: true,
+      withCatch: true,
+    });
+    expect(callback.mock.calls).toEqual([
+      ['start p1'],
+      ['resolve p1'],
+      ['catch p2'],
+      ['start p3'],
+      ['cancel p2'],
+      ['abort p3'],
+    ]);
+  });
+});

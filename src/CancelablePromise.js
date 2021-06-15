@@ -2,7 +2,14 @@ function createCallback(onResult, options) {
   if (onResult) {
     return (arg) => {
       if (!options.isCanceled) {
-        return onResult(arg);
+        const result = onResult(arg);
+        if (result && typeof result.cancel === 'function') {
+          if (!options.onCancelList) {
+            options.onCancelList = [];
+          }
+          options.onCancelList.push(result.cancel);
+        }
+        return result;
       }
       return arg;
     };
