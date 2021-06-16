@@ -1,3 +1,59 @@
+## [4.1.0](https://github.com/alkemics/CancelablePromise/releases/tag/v4.1.0) (2021-06-16)
+
+- Prepare release without commit
+- Cancel cancelable promise returned by a then/catch callback
+
+Consider this example:
+
+```js
+const { CancelablePromise } = require('cancelable-promise');
+
+const promise1 = new CancelablePromise((resolve, reject, onCancel) => {
+  const timer = setTimeout(() => {
+    console.log('resolve promise1');
+    resolve();
+  }, 1000);
+  const abort = () => {
+    clearTimeout(timer);
+  };
+  onCancel(abort);
+});
+
+const promise2 = promise1.then(() => {
+  const promise3 = new CancelablePromise((resolve, reject, onCancel) => {
+    const timer = setTimeout(() => {
+      console.log('resolve promise 3');
+      resolve();
+    }, 1000);
+    const abort = () => {
+      clearTimeout(timer);
+    };
+    onCancel(abort);
+  });
+  return promise3;
+});
+
+setTimeout(() => {
+  console.log('cancel promise 2');
+  promise2.cancel();
+}, 1500);
+```
+
+Before this release, output was:
+
+```
+resolve promise1
+cancel promise 2
+resolve promise 3
+```
+
+Now if you return a cancelable promise in a then/catch callback, it will cancel it too when you are canceling the parent promise. Output will be:
+
+```
+resolve promise1
+cancel promise 2
+```
+
 ## [4.0.0](https://github.com/alkemics/CancelablePromise/releases/tag/v4.0.0) (2021-05-27)
 
 - Update dependencies and add esm module
