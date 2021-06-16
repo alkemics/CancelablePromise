@@ -47,7 +47,7 @@ cancel promise 2
 resolve promise 3
 ```
 
-Now if you return a cancelable promise in a then/catch callback, it will canceled too when you are canceling the parent promise. Output will be:
+Now if you return a cancelable promise in a then/catch callback, it will cancel it too when you are canceling the parent promise. Output will be:
 
 ```
 resolve promise1
