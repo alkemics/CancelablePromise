@@ -1,4 +1,7 @@
+.vscode
+.idea
+.github
+.husky
 node_modules
 umd
 esm
-**/*.ts

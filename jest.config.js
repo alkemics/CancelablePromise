@@ -1,10 +1,10 @@
 module.exports = {
-  testMatch: ['**/*.test.js'],
+  testMatch: ['**/*.test.ts'],
   setupFiles: [
     '<rootDir>/node_modules/regenerator-runtime/runtime',
     '<rootDir>/node_modules/core-js/features/promise/index',
   ],
   transform: {
-    '^.+\\.js$': 'babel-jest',
+    '^.+\\.(j|t)s$': 'babel-jest',
   },
 };
