@@ -75,16 +75,19 @@ class CancelablePromiseInternal<T = any> {
       this.#internals.onCancelList.push(onfinally);
     }
     return makeCancelable<T>(
-      this.#promise.finally(() => {
-        if (onfinally) {
-          if (runWhenCanceled) {
-            this.#internals.onCancelList = this.#internals.onCancelList.filter(
-              (callback) => callback !== onfinally
-            );
+      this.#promise.finally(
+        createCallback(() => {
+          if (onfinally) {
+            if (runWhenCanceled) {
+              this.#internals.onCancelList =
+                this.#internals.onCancelList.filter(
+                  (callback) => callback !== onfinally
+                );
+            }
+            return onfinally();
           }
-          return onfinally();
-        }
-      }),
+        }, this.#internals)
+      ),
       this.#internals
     );
   }
@@ -162,9 +165,6 @@ function createCallback(onResult: any, internals: Internals) {
       if (!internals.isCanceled) {
         const result = onResult(arg);
         if (isCancelablePromise(result)) {
-          if (!internals.onCancelList) {
-            internals.onCancelList = [];
-          }
           internals.onCancelList.push(result.cancel);
         }
         return result;

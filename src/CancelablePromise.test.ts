@@ -185,16 +185,90 @@ test('Cancel a rejected promise', async () => {
   expect(callback).toHaveBeenCalledTimes(0);
 });
 
-test('Cancel a promise but finally should be still executed', async () => {
+test('Cancel a promise but finally should not be still executed', async () => {
   const callback = jest.fn();
   const promise = cancelable(
     new Promise((resolve) => {
-      delay(1, resolve);
+      delay(5, resolve);
     })
   ).finally(callback);
   promise.cancel();
   await delay(10);
+  expect(callback).toHaveBeenCalledTimes(0);
+});
+
+test('Cancel a promise but finally should be still executed', async () => {
+  const callback = jest.fn();
+  const promise = cancelable(
+    new Promise((resolve) => {
+      delay(5, resolve);
+    })
+  ).finally(callback, true);
+  promise.cancel();
+  await delay(10);
   expect(callback).toHaveBeenCalledTimes(1);
+});
+
+test('Cancel a promise but finally should not be executed twice #1', async () => {
+  const callback = jest.fn();
+  const promise = cancelable(
+    new Promise<void>((resolve) => {
+      resolve();
+    })
+  ).finally(callback, true);
+  await promise;
+  expect(callback).toHaveBeenCalledTimes(1);
+  promise.cancel();
+  await delay(10);
+  expect(callback).toHaveBeenCalledTimes(1);
+});
+
+test('Cancel a promise but finally should not be executed twice #2', async () => {
+  const callback = jest.fn();
+  const promise = cancelable(
+    new Promise<void>((resolve) => {
+      delay(10, resolve);
+    })
+  ).finally(callback, true);
+  await delay(5);
+  promise.cancel();
+  await delay(10);
+  expect(callback).toHaveBeenCalledTimes(1);
+});
+
+test('On cancel callbacks should executed in the correct order', async () => {
+  const callback = jest.fn();
+  const p1 = cancelable(Promise.resolve(callback('resolve p1')));
+  p1.then(() => {
+    return new CancelablePromise((resolve, reject, onCancel) => {
+      delay(10, resolve);
+      onCancel(() => {
+        callback('cancel p2');
+      });
+    }).finally(() => {
+      callback('finally p2');
+    }, true);
+  });
+  p1.then(() => {
+    return new CancelablePromise((resolve, reject, onCancel) => {
+      delay(10, resolve);
+      onCancel(() => {
+        callback('cancel p3');
+      });
+    }).finally(() => {
+      callback('finally p3');
+    }, true);
+  });
+  await delay(5);
+  p1.cancel();
+  await delay(10);
+  expect(callback.mock.calls).toEqual([
+    ['resolve p1'],
+    ['cancel p2'],
+    ['finally p2'],
+    ['cancel p3'],
+    ['finally p3'],
+  ]);
 });
 
 test('CancelablePromise.resolve()', async () => {
