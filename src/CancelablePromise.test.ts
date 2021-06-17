@@ -281,7 +281,7 @@ describe('CancelablePromise.race()', () => {
   it('should resolve', async () => {
     const callback = jest.fn();
     const promise = CancelablePromise.race([
-      delay(2),
+      delay(5),
       delay(1, () => 'yes'),
     ]).then(callback);
     await promise;

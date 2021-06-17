@@ -72,16 +72,13 @@ class CancelablePromiseInternal<T = any> {
     runWhenCanceled?: boolean
   ): CancelablePromise<T> {
     if (runWhenCanceled) {
-      if (!this.#internals.finallyList) {
-        this.#internals.finallyList = [];
-      }
-      this.#internals.finallyList.push(onfinally);
+      this.#internals.onCancelList.push(onfinally);
     }
     return makeCancelable<T>(
       this.#promise.finally(() => {
         if (onfinally) {
           if (runWhenCanceled) {
-            this.#internals.finallyList = this.#internals.finallyList.filter(
+            this.#internals.onCancelList = this.#internals.onCancelList.filter(
               (callback) => callback !== onfinally
             );
           }
@@ -94,10 +91,9 @@ class CancelablePromiseInternal<T = any> {
 
   cancel(): void {
     this.#internals.isCanceled = true;
-    const { onCancelList = [], finallyList = [] } = this.#internals;
-    const callbacks = onCancelList.concat(finallyList);
-    while (callbacks.length) {
-      const callback = callbacks.shift();
+    const callbacks = this.#internals.onCancelList;
+    this.#internals.onCancelList = [];
+    for (const callback of callbacks) {
       if (typeof callback === 'function') {
         try {
           callback();
@@ -160,14 +156,7 @@ export function isCancelablePromise(promise: any): boolean {
   );
 }
 
-function createCallback(
-  onResult: any,
-  internals: {
-    isCanceled?: boolean;
-    onCancelList?: any[];
-    finallyList?: any[];
-  }
-) {
+function createCallback(onResult: any, internals: Internals) {
   if (onResult) {
     return (arg?: any) => {
       if (!internals.isCanceled) {
@@ -205,13 +194,12 @@ function makeAllCancelable(iterable: any, promise: Promise<any>) {
 }
 
 function defaultInternals(): Internals {
-  return { isCanceled: false, onCancelList: [], finallyList: [] };
+  return { isCanceled: false, onCancelList: [] };
 }
 
 interface Internals {
   isCanceled: boolean;
   onCancelList: any[];
-  finallyList: any[];
 }
 
 interface CancelablePromiseOverloads {
