@@ -1,4 +1,8 @@
-import { cancelable, CancelablePromise } from './CancelablePromise';
+import {
+  cancelable,
+  CancelablePromise,
+  isCancelablePromise,
+} from './CancelablePromise';
 
 const delay = async (timeout = 0, callback?: Function) => {
   await new Promise((resolve) => setTimeout(resolve, timeout));
@@ -557,3 +561,29 @@ describe('Cancelable promises returned by executors', () => {
     expect(callback).not.toHaveBeenCalled();
   });
 });
+
+for (const [label, isCancelable] of [
+  ['isCancelablePromise', isCancelablePromise],
+  ['CancelablePromise.isCancelable', CancelablePromise.isCancelable],
+] as [string, typeof isCancelablePromise][]) {
+  describe(label, () => {
+    it('should be cancelable', () => {
+      const p1 = cancelable(new Promise(() => {}));
+      const p2 = new CancelablePromise(() => {});
+      expect(isCancelable(p1)).toBe(true);
+      expect(isCancelable(p2)).toBe(true);
+      expect(isCancelable(p1.then(() => {}))).toBe(true);
+      expect(isCancelable(p2.then(() => {}))).toBe(true);
+      expect(isCancelable(p1.catch(() => {}))).toBe(true);
+      expect(isCancelable(p2.catch(() => {}))).toBe(true);
+    });
+
+    it('should not be cancelable', () => {
+      expect(isCancelable(new Promise(() => {}))).toBe(false);
+      expect(isCancelable(undefined)).toBe(false);
+      expect(isCancelable(null)).toBe(false);
+      expect(isCancelable({})).toBe(false);
+      expect(isCancelable({ cancel() {} })).toBe(false);
+    });
+  });
+}

@@ -134,6 +134,8 @@ export class CancelablePromise<T = any> extends CancelablePromiseInternal<T> {
     return cancelable(Promise.reject(reason));
   } as CancelablePromiseOverloads['reject'];
 
+  static isCancelable = isCancelablePromise;
+
   constructor(
     executor: (
       resolve: (value: T | PromiseLike<T>) => void,
@@ -151,6 +153,13 @@ export function cancelable<T = any>(promise: Promise<T>): CancelablePromise<T> {
   return makeCancelable(promise, defaultInternals());
 }
 
+export function isCancelablePromise(promise: any): boolean {
+  return (
+    promise instanceof CancelablePromise ||
+    promise instanceof CancelablePromiseInternal
+  );
+}
+
 function createCallback(
   onResult: any,
   internals: {
@@ -163,7 +172,7 @@ function createCallback(
     return (arg?: any) => {
       if (!internals.isCanceled) {
         const result = onResult(arg);
-        if (isCancelable(result)) {
+        if (isCancelablePromise(result)) {
           if (!internals.onCancelList) {
             internals.onCancelList = [];
           }
@@ -187,19 +196,12 @@ function makeAllCancelable(iterable: any, promise: Promise<any>) {
   const internals = defaultInternals();
   internals.onCancelList.push(() => {
     for (const resolvable of iterable) {
-      if (isCancelable(resolvable)) {
+      if (isCancelablePromise(resolvable)) {
         resolvable.cancel();
       }
     }
   });
   return new CancelablePromiseInternal({ internals, promise });
-}
-
-function isCancelable(promise: any) {
-  return (
-    promise instanceof CancelablePromise ||
-    promise instanceof CancelablePromiseInternal
-  );
 }
 
 function defaultInternals(): Internals {

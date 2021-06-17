@@ -8,6 +8,7 @@ This package is based on ES Promise.
 
 - See [caniuse](https://caniuse.com/#search=Promise) for browser support
 - See [core-js](https://github.com/zloirock/core-js#ecmascript-promise) for polyfills
+- For example, you can use https://polyfill.io/v3/polyfill.min.js?features=Promise%2CPromise.prototype.finally for Internet Explorer 11
 
 FYI, you can cancel a fetch request with AbortController & AbortSignal.
 
@@ -130,7 +131,7 @@ promise.cancel(); // It will execute the callback passed to onCancel
 
 _`onCancel` callback is working as in [p-cancelable](https://github.com/sindresorhus/p-cancelable)_
 
-### CancelablePromise.cancel
+### cancelablePromise.cancel
 
 ```javascript
 /**
@@ -139,7 +140,7 @@ _`onCancel` callback is working as in [p-cancelable](https://github.com/sindreso
 cancelablePromise.cancel();
 ```
 
-### CancelablePromise.isCanceled
+### cancelablePromise.isCanceled
 
 ```javascript
 /**
@@ -148,7 +149,7 @@ cancelablePromise.cancel();
 cancelablePromise.isCanceled();
 ```
 
-### CancelablePromise.finally
+### cancelablePromise.finally
 
 ```javascript
 /**
@@ -212,6 +213,40 @@ import { cancelable } from 'cancelable-promise';
 cancelable(Promise.all([promise1, promise2]));
 cancelable(Promise.race([promise1, promise2]));
 cancelable(Promise.allSettled([promise1, promise2]));
+```
+
+#### CancelablePromise.isCancelable
+
+Returns `true` if parameter is a cancelable promise.
+
+```javascript
+import { cancelable, CancelablePromise } from 'cancelable-promise';
+
+CancelablePromise.isCancelable(cancelable(new Promise(() => {}))); // true
+CancelablePromise.isCancelable(new CancelablePromise(() => {})); // true
+CancelablePromise.isCancelable(new Promise(() => {})); // false
+CancelablePromise.isCancelable(undefined); // false
+CancelablePromise.isCancelable({ cancel() {} }); // false
+```
+
+### Utils
+
+#### isCancelablePromise
+
+Same as `CancelablePromise.isCancelable`, it returns `true` if parameter is a cancelable promise.
+
+```javascript
+import {
+  cancelable,
+  CancelablePromise,
+  isCancelablePromise,
+} from 'cancelable-promise';
+
+isCancelablePromise(cancelable(new Promise(() => {}))); // true
+isCancelablePromise(new CancelablePromise(() => {})); // true
+isCancelablePromise(new Promise(() => {})); // false
+isCancelablePromise(undefined); // false
+isCancelablePromise({ cancel() {} }); // false
 ```
 
 ## Scripts

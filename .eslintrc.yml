@@ -12,6 +12,7 @@ env:
 rules:
   '@typescript-eslint/no-explicit-any': off
   '@typescript-eslint/no-empty-function': off
+  '@typescript-eslint/explicit-module-boundary-types': off
 overrides:
   - files:
       - '**/*.test.ts'
@@ -29,7 +30,6 @@ overrides:
       Cypress: true
     rules:
       '@typescript-eslint/no-var-requires': off
-      '@typescript-eslint/explicit-module-boundary-types': off
   - files:
       - 'scripts.js'
       - 'tests/esm.server.js'
