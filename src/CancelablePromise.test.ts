@@ -1,6 +1,10 @@
-import { cancelable, CancelablePromise } from '../src/CancelablePromise';
+import {
+  cancelable,
+  CancelablePromise,
+  isCancelablePromise,
+} from './CancelablePromise';
 
-const delay = async (timeout = 0, callback) => {
+const delay = async (timeout = 0, callback?: Function) => {
   await new Promise((resolve) => setTimeout(resolve, timeout));
   if (callback) {
     return await callback();
@@ -8,11 +12,14 @@ const delay = async (timeout = 0, callback) => {
 };
 
 describe('Fulfilled worflow', () => {
-  const promises = [
+  const promises: (
+    | [string, () => Promise<any>]
+    | [string, () => CancelablePromise<any>]
+  )[] = [
     [
       'cancelable()',
       () =>
-        cancelable(
+        cancelable<void>(
           new Promise((resolve) => {
             delay(1, resolve);
           })
@@ -34,7 +41,9 @@ describe('Fulfilled worflow', () => {
     ],
   ];
 
-  const expectResolveWorkflow = async (promise1) => {
+  const expectResolveWorkflow = async (
+    promise1: Promise<any> | CancelablePromise<any>
+  ) => {
     const callback = jest.fn();
     const promise2 = promise1.then(callback);
     const promise3 = promise1.then(() => {
@@ -68,11 +77,14 @@ describe('Fulfilled worflow', () => {
 });
 
 describe('Rejected worflow', () => {
-  const promises = [
+  const promises: (
+    | [string, () => Promise<any>]
+    | [string, () => CancelablePromise<any>]
+  )[] = [
     [
       'cancelable()',
       () =>
-        cancelable(
+        cancelable<any>(
           new Promise((resolve, reject) => {
             delay(1, () => reject(new Error('native promise error')));
           })
@@ -81,7 +93,7 @@ describe('Rejected worflow', () => {
     [
       'new CancelablePromise()',
       () =>
-        new CancelablePromise((resolve, reject) => {
+        new CancelablePromise<any>((resolve, reject) => {
           delay(1, () => reject(new Error('cancelable promise error')));
         }),
     ],
@@ -94,7 +106,9 @@ describe('Rejected worflow', () => {
     ],
   ];
 
-  const expectErrorWorkflow = async (promise1) => {
+  const expectErrorWorkflow = async (
+    promise1: Promise<any> | CancelablePromise<any>
+  ) => {
     const callback = jest.fn();
     const promise2 = promise1.then(callback).catch(() => callback(1));
     const promise3 = promise1.then(callback, () => callback(2));
@@ -171,32 +185,106 @@ test('Cancel a rejected promise', async () => {
   expect(callback).toHaveBeenCalledTimes(0);
 });
 
+test('Cancel a promise but finally should not be still executed', async () => {
+  const callback = jest.fn();
+  const promise = cancelable(
+    new Promise((resolve) => {
+      delay(5, resolve);
+    })
+  ).finally(callback);
+  promise.cancel();
+  await delay(10);
+  expect(callback).toHaveBeenCalledTimes(0);
+});
+
 test('Cancel a promise but finally should be still executed', async () => {
   const callback = jest.fn();
   const promise = cancelable(
     new Promise((resolve) => {
-      delay(1, resolve);
+      delay(5, resolve);
     })
-  ).finally(callback);
+  ).finally(callback, true);
   promise.cancel();
   await delay(10);
   expect(callback).toHaveBeenCalledTimes(1);
 });
 
+test('Cancel a promise but finally should not be executed twice #1', async () => {
+  const callback = jest.fn();
+  const promise = cancelable(
+    new Promise<void>((resolve) => {
+      resolve();
+    })
+  ).finally(callback, true);
+  await promise;
+  expect(callback).toHaveBeenCalledTimes(1);
+  promise.cancel();
+  await delay(10);
+  expect(callback).toHaveBeenCalledTimes(1);
+});
+
+test('Cancel a promise but finally should not be executed twice #2', async () => {
+  const callback = jest.fn();
+  const promise = cancelable(
+    new Promise<void>((resolve) => {
+      delay(10, resolve);
+    })
+  ).finally(callback, true);
+  await delay(5);
+  promise.cancel();
+  await delay(10);
+  expect(callback).toHaveBeenCalledTimes(1);
+});
+
+test('On cancel callbacks should executed in the correct order', async () => {
+  const callback = jest.fn();
+  const p1 = cancelable(Promise.resolve(callback('resolve p1')));
+  p1.then(() => {
+    return new CancelablePromise((resolve, reject, onCancel) => {
+      delay(10, resolve);
+      onCancel(() => {
+        callback('cancel p2');
+      });
+    }).finally(() => {
+      callback('finally p2');
+    }, true);
+  });
+  p1.then(() => {
+    return new CancelablePromise((resolve, reject, onCancel) => {
+      delay(10, resolve);
+      onCancel(() => {
+        callback('cancel p3');
+      });
+    }).finally(() => {
+      callback('finally p3');
+    }, true);
+  });
+  await delay(5);
+  p1.cancel();
+  await delay(10);
+  expect(callback.mock.calls).toEqual([
+    ['resolve p1'],
+    ['cancel p2'],
+    ['finally p2'],
+    ['cancel p3'],
+    ['finally p3'],
+  ]);
+});
+
 test('CancelablePromise.resolve()', async () => {
   const callback = jest.fn();
-  await new Promise((resolve) => resolve(CancelablePromise.resolve('ok'))).then(
-    callback
-  );
+  await new Promise<string>((resolve) =>
+    resolve(CancelablePromise.resolve('ok'))
+  ).then(callback);
   expect(callback).toHaveBeenCalledTimes(1);
   expect(callback).toHaveBeenCalledWith('ok');
 });
 
 test('CancelablePromise.reject()', async () => {
   const callback = jest.fn();
-  await new Promise((resolve) => resolve(CancelablePromise.reject('ko'))).catch(
-    callback
-  );
+  await new Promise<string>((resolve) =>
+    resolve(CancelablePromise.reject('ko'))
+  ).catch(callback);
   expect(callback).toHaveBeenCalledTimes(1);
   expect(callback).toHaveBeenCalledWith('ko');
 });
@@ -204,7 +292,7 @@ test('CancelablePromise.reject()', async () => {
 describe('CancelablePromise.all()', () => {
   it('should resolve', async () => {
     const callback = jest.fn();
-    const promise = CancelablePromise.all([
+    const promise = CancelablePromise.all<string>([
       Promise.resolve('ok1'),
       delay(1, () => 'ok2'),
     ]).then(callback);
@@ -218,6 +306,10 @@ describe('CancelablePromise.all()', () => {
     const promise = CancelablePromise.all([
       CancelablePromise.resolve(),
       delay(1),
+      cancelable(new Promise((resolve) => delay(5, resolve))).then(callback),
+      new CancelablePromise((resolve) => {
+        delay(4, resolve);
+      }).then(callback),
     ]).then(callback);
     promise.cancel();
     await delay(10);
@@ -248,6 +340,10 @@ describe('CancelablePromise.allSettled()', () => {
       Promise.resolve(),
       Promise.reject(),
       delay(1),
+      cancelable(new Promise((resolve) => delay(5, resolve))).then(callback),
+      new CancelablePromise((resolve) => {
+        delay(4, resolve);
+      }).then(callback),
     ]).then(callback);
     promise.cancel();
     await delay(10);
@@ -259,7 +355,7 @@ describe('CancelablePromise.race()', () => {
   it('should resolve', async () => {
     const callback = jest.fn();
     const promise = CancelablePromise.race([
-      delay(2),
+      delay(5),
       delay(1, () => 'yes'),
     ]).then(callback);
     await promise;
@@ -272,6 +368,10 @@ describe('CancelablePromise.race()', () => {
     const promise = CancelablePromise.race([
       new Promise(() => {}),
       delay(1),
+      cancelable(new Promise((resolve) => delay(5, resolve))).then(callback),
+      new CancelablePromise((resolve) => {
+        delay(4, resolve);
+      }).then(callback),
     ]).then(callback);
     promise.cancel();
     await delay(10);
@@ -280,12 +380,20 @@ describe('CancelablePromise.race()', () => {
 });
 
 describe('Cancelable promises returned by executors', () => {
-  async function worflow({ withClass, withFail, withCatch }) {
+  async function worflow({
+    withClass,
+    withFail,
+    withCatch,
+  }: {
+    withClass?: boolean;
+    withFail?: boolean;
+    withCatch?: boolean;
+  }) {
     const callback = jest.fn();
-    let promise1;
+    let promise1: CancelablePromise<void>;
 
     if (withClass) {
-      promise1 = new CancelablePromise((resolve, reject, onCancel) => {
+      promise1 = new CancelablePromise<void>((resolve, reject, onCancel) => {
         callback('start p1');
         const timer = setTimeout(() => {
           callback('resolve p1');
@@ -303,7 +411,7 @@ describe('Cancelable promises returned by executors', () => {
       });
     } else {
       promise1 = cancelable(
-        new Promise((resolve, reject) => {
+        new Promise<void>((resolve, reject) => {
           callback('start p1');
           delay(5, () => {
             callback('resolve p1');
@@ -318,10 +426,10 @@ describe('Cancelable promises returned by executors', () => {
     }
 
     let promise2 = promise1.then(
-      ...[
+      ...([
         () => {
           callback('then p2');
-          const promise3 = new CancelablePromise(
+          const promise3 = new CancelablePromise<void>(
             (resolve, reject, onCancel) => {
               callback('start p3');
               const timer = setTimeout(() => {
@@ -340,7 +448,7 @@ describe('Cancelable promises returned by executors', () => {
         !withCatch &&
           (() => {
             callback('error p2');
-            const promise3 = new CancelablePromise(
+            const promise3 = new CancelablePromise<void>(
               (resolve, reject, onCancel) => {
                 callback('start p3');
                 const timer = setTimeout(() => {
@@ -356,24 +464,26 @@ describe('Cancelable promises returned by executors', () => {
             );
             return promise3;
           }),
-      ].filter(Boolean)
+      ].filter(Boolean) as [() => CancelablePromise<void>])
     );
 
     if (withCatch) {
       promise2 = promise2.catch(() => {
         callback('catch p2');
-        const promise3 = new CancelablePromise((resolve, reject, onCancel) => {
-          callback('start p3');
-          const timer = setTimeout(() => {
-            callback('resolve p3');
-            resolve();
-          }, 10);
-          const abort = () => {
-            callback('abort p3');
-            clearTimeout(timer);
-          };
-          onCancel(abort);
-        });
+        const promise3 = new CancelablePromise<void>(
+          (resolve, reject, onCancel) => {
+            callback('start p3');
+            const timer = setTimeout(() => {
+              callback('resolve p3');
+              resolve();
+            }, 10);
+            const abort = () => {
+              callback('abort p3');
+              clearTimeout(timer);
+            };
+            onCancel(abort);
+          }
+        );
         return promise3;
       });
     }
@@ -480,4 +590,74 @@ describe('Cancelable promises returned by executors', () => {
       ['abort p3'],
     ]);
   });
+
+  it('should cancel promises deeply', async () => {
+    const callback = jest.fn();
+    const promise1 = cancelable(
+      new Promise((resolve) => {
+        setTimeout(resolve, 1);
+      })
+    ).then(() => {
+      return new CancelablePromise((resolve) => {
+        setTimeout(resolve, 1);
+      }).then(() => {
+        return cancelable(
+          new Promise<void>((resolve) => {
+            setTimeout(() => {
+              resolve();
+            }, 1);
+          })
+        ).then(() => {
+          return new CancelablePromise<void>((resolve, reject, onCancel) => {
+            const timer = setTimeout(() => {
+              callback('it should not resolve');
+              resolve();
+            }, 10);
+            onCancel(() => {
+              clearTimeout(timer);
+            });
+          }).then(() => {
+            return cancelable(
+              new Promise<void>((resolve) => {
+                setTimeout(() => {
+                  callback('it should not resolve');
+                  resolve();
+                }, 0);
+              })
+            );
+          });
+        });
+      });
+    });
+    await delay(5);
+    promise1.cancel();
+    await delay(20);
+    expect(callback).not.toHaveBeenCalled();
+  });
 });
+
+for (const [label, isCancelable] of [
+  ['isCancelablePromise', isCancelablePromise],
+  ['CancelablePromise.isCancelable', CancelablePromise.isCancelable],
+] as [string, typeof isCancelablePromise][]) {
+  describe(label, () => {
+    it('should be cancelable', () => {
+      const p1 = cancelable(new Promise(() => {}));
+      const p2 = new CancelablePromise(() => {});
+      expect(isCancelable(p1)).toBe(true);
+      expect(isCancelable(p2)).toBe(true);
+      expect(isCancelable(p1.then(() => {}))).toBe(true);
+      expect(isCancelable(p2.then(() => {}))).toBe(true);
+      expect(isCancelable(p1.catch(() => {}))).toBe(true);
+      expect(isCancelable(p2.catch(() => {}))).toBe(true);
+    });
+
+    it('should not be cancelable', () => {
+      expect(isCancelable(new Promise(() => {}))).toBe(false);
+      expect(isCancelable(undefined)).toBe(false);
+      expect(isCancelable(null)).toBe(false);
+      expect(isCancelable({})).toBe(false);
+      expect(isCancelable({ cancel() {} })).toBe(false);
+    });
+  });
+}

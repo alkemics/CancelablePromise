@@ -3,9 +3,34 @@ module.exports = {
     [
       '@babel/preset-env',
       {
-        targets: { browsers: ['>0.25%', 'not dead', 'IE 11'] },
+        targets: { ie: '11' },
         modules: 'umd',
       },
     ],
+    '@babel/preset-typescript',
   ],
+  env: {
+    esm: {
+      presets: [
+        [
+          '@babel/preset-env',
+          {
+            targets: { esmodules: true },
+            modules: false,
+          },
+        ],
+      ],
+    },
+    test: {
+      presets: [
+        [
+          '@babel/preset-env',
+          {
+            targets: { node: 12 },
+            modules: 'commonjs',
+          },
+        ],
+      ],
+    },
+  },
 };
