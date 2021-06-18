@@ -1,3 +1,10 @@
+## [4.2.0](https://github.com/alkemics/CancelablePromise/releases/tag/v4.2.0) (2021-06-17)
+
+- Fix finally usecase always been called
+- Merge onCancelList and finallyList
+- Add isCancelablePromise util
+- Migrate to Typescript and improve umd/esm outputs
+
 ## [4.1.0](https://github.com/alkemics/CancelablePromise/releases/tag/v4.1.0) (2021-06-16)
 
 - Prepare release without commit
