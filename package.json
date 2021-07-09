@@ -8,6 +8,7 @@
     "cancellable"
   ],
   "main": "umd/CancelablePromise.js",
+  "browser": "umd/CancelablePromise.js",
   "module": "esm/CancelablePromise.mjs",
   "types": "esm/CancelablePromise.d.ts",
   "files": [
