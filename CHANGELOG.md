@@ -1,3 +1,8 @@
+## [4.2.1](https://github.com/alkemics/CancelablePromise/releases/tag/v4.2.1) (2021-07-09)
+
+- add browser entrypoint in package.json
+- upgrade dev dependencies
+
 ## [4.2.0](https://github.com/alkemics/CancelablePromise/releases/tag/v4.2.0) (2021-06-17)
 
 - Fix finally usecase always been called
