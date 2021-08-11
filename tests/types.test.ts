@@ -3,7 +3,7 @@ import CancelablePromiseDefault, {
   CancelablePromise,
 } from '../src/CancelablePromise';
 
-test('cancelable types', () => {
+test('cancelable types', async () => {
   const p1 = cancelable(
     new Promise<{ value: number }>((resolve) => {
       resolve({ value: 1 });
@@ -40,10 +40,10 @@ test('cancelable types', () => {
   const p5: CancelablePromise<string | Error> = p4.then((result) => {
     return result;
   });
-  return p5;
+  await p5;
 });
 
-test('CancelablePromise types', () => {
+test('CancelablePromise types', async () => {
   const p1: CancelablePromise<number> = new CancelablePromise<{
     value: number;
   }>((resolve, reject, onCancel) => {
@@ -61,10 +61,10 @@ test('CancelablePromise types', () => {
     .catch((err: { code: number }) => {
       return err.code;
     });
-  return p1;
+  await p1;
 });
 
-test('CancelablePromiseDefault types', () => {
+test('CancelablePromiseDefault types', async () => {
   const p1: CancelablePromise<number> = new CancelablePromiseDefault<{
     value: number;
   }>((resolve, reject, onCancel) => {
@@ -82,10 +82,10 @@ test('CancelablePromiseDefault types', () => {
     .catch((err: { code: number }) => {
       return err.code;
     });
-  return p1;
+  await p1;
 });
 
-test('CancelablePromise.all', () => {
+test('CancelablePromise.all', async () => {
   const p1: CancelablePromise<string> = CancelablePromise.all([
     Promise.resolve(1),
     Promise.resolve('2'),
@@ -96,10 +96,10 @@ test('CancelablePromise.all', () => {
     const nul: null = r3;
     return `${num}${str}${nul}`;
   });
-  return p1;
+  await p1;
 });
 
-test('CancelablePromise.allSettled', () => {
+test('CancelablePromise.allSettled', async () => {
   const p1: CancelablePromise<string> = CancelablePromise.allSettled([
     Promise.resolve(1),
     Promise.resolve('2'),
@@ -110,10 +110,10 @@ test('CancelablePromise.allSettled', () => {
     const nul: null = r3.status === 'fulfilled' ? r3.value : r3.reason;
     return `${num}${str}${nul}`;
   });
-  return p1;
+  await p1;
 });
 
-test('CancelablePromise.race', () => {
+test('CancelablePromise.race', async () => {
   const p1: CancelablePromise<string | number | null> = CancelablePromise.race([
     Promise.resolve(1),
     Promise.resolve('2'),
@@ -121,23 +121,23 @@ test('CancelablePromise.race', () => {
   ]).then((result) => {
     return result;
   });
-  return p1;
+  await p1;
 });
 
-test('CancelablePromise.resolve', () => {
+test('CancelablePromise.resolve', async () => {
   const p1: CancelablePromise<number> = CancelablePromise.resolve({
     value: 1,
   }).then((result) => {
     return result.value;
   });
-  return p1;
+  await p1;
 });
 
-test('CancelablePromise.reject', () => {
+test('CancelablePromise.reject', async () => {
   const p1: CancelablePromise<string> = CancelablePromise.reject(
     new Error('error')
   ).catch((err: Error) => {
     return err.message;
   });
-  return p1;
+  await p1;
 });
