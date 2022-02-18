@@ -202,8 +202,6 @@ interface Internals {
   onCancelList: any[];
 }
 
-Promise.all
-
 interface CancelablePromiseOverloads {
 
   all<T extends (T[] | PromiseLike<T>[])>(values: T): CancelablePromise<{ [P in keyof T]: T[P] extends PromiseLike<infer U> ? U : T[P] }>;
