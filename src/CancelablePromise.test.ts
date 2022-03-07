@@ -292,7 +292,7 @@ test('CancelablePromise.reject()', async () => {
 describe('CancelablePromise.all()', () => {
   it('should resolve', async () => {
     const callback = jest.fn();
-    const promise = CancelablePromise.all<string>([
+    const promise = CancelablePromise.all<[Promise<string>, Promise<any>]>([
       Promise.resolve('ok1'),
       delay(1, () => 'ok2'),
     ]).then(callback);
@@ -366,6 +366,34 @@ describe('CancelablePromise.race()', () => {
   it('should cancel', async () => {
     const callback = jest.fn();
     const promise = CancelablePromise.race([
+      new Promise(() => {}),
+      delay(1),
+      cancelable(new Promise((resolve) => delay(5, resolve))).then(callback),
+      new CancelablePromise((resolve) => {
+        delay(4, resolve);
+      }).then(callback),
+    ]).then(callback);
+    promise.cancel();
+    await delay(10);
+    expect(callback).toHaveBeenCalledTimes(0);
+  });
+});
+
+describe('CancelablePromise.any()', () => {
+  it('should resolve', async () => {
+    const callback = jest.fn();
+    const promise = CancelablePromise.any([
+      delay(5),
+      delay(1, () => 'yes'),
+    ]).then(callback);
+    await promise;
+    expect(callback).toHaveBeenCalledTimes(1);
+    expect(callback).toHaveBeenCalledWith('yes');
+  });
+
+  it('should cancel', async () => {
+    const callback = jest.fn();
+    const promise = CancelablePromise.any([
       new Promise(() => {}),
       delay(1),
       cancelable(new Promise((resolve) => delay(5, resolve))).then(callback),
