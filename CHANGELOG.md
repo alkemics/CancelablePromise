@@ -1,3 +1,10 @@
+## [4.3.0](https://github.com/alkemics/CancelablePromise/releases/tag/v4.3.0) (2022-03-14)
+
+- chore(deps-dev): bump @typescript-eslint/eslint-plugin
+- chore(deps-dev): bump @typescript-eslint/parser from 5.13.0 to 5.14.0
+- chore(deps-dev): bump lint-staged from 12.3.4 to 12.3.5
+- feat(any): support Promise.any
+
 ## [4.2.1](https://github.com/alkemics/CancelablePromise/releases/tag/v4.2.1) (2021-07-09)
 
 - add browser entrypoint in package.json
