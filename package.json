@@ -82,7 +82,7 @@
     "babel-eslint": "~10.1.0",
     "concurrently": "~7.1.0",
     "core-js": "~3.22.0",
-    "cypress": "~9.5.0",
+    "cypress": "~9.6.0",
     "eslint": "~8.14.0",
     "express": "~4.17.1",
     "fs-extra": "~10.1.0",
