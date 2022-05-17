@@ -1,0 +1,17 @@
+name: dependabot-merge
+on: pull_request
+
+jobs:
+  dependabot-merge:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/checkout@v3
+        with:
+          repository: alkemics/lib-action-dependabot-merge
+          ref: v1
+          path: .lib-action-dependabot-merge
+          token: ${{ secrets.AUTO_MERGE_TOKEN }}
+      - uses: ./.lib-action-dependabot-merge
+        with:
+          github-token: ${{ secrets.AUTO_MERGE_TOKEN }}
