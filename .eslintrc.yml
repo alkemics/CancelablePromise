@@ -33,6 +33,7 @@ overrides:
   - files:
       - 'scripts.js'
       - 'tests/esm.server.js'
+      - 'cypress.config.js'
     env:
       node: true
     rules:
