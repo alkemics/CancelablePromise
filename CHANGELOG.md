@@ -1,3 +1,21 @@
+## [4.3.1](https://github.com/alkemics/CancelablePromise/releases/tag/v4.3.1) (2022-10-14)
+
+Noticeable changes:
+
+- fix(type): add toStringTag symbol to class fields to be compatible with Promise type
+
+Other changes:
+
+- chore(release): update preparation commit message
+- chore(deps-dev): bump @babel/preset-env from 7.19.3 to 7.19.4
+- chore(deps-dev): bump terser from 5.15.0 to 5.15.1
+- chore(deps-dev): bump core-js from 3.25.3 to 3.25.5
+- chore(deps-dev): bump @babel/cli from 7.18.10 to 7.19.3
+- chore(deps-dev): bump @babel/core from 7.19.1 to 7.19.3
+- chore(deps-dev): bump @babel/preset-typescript from 7.17.12 to 7.18.6
+- fix(cypress): migrate cypress config file for v10
+- fix(tests): fix tests for jest v28
+
 ## [4.3.0](https://github.com/alkemics/CancelablePromise/releases/tag/v4.3.0) (2022-03-14)
 
 - chore(deps-dev): bump @typescript-eslint/eslint-plugin

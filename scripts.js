@@ -53,7 +53,40 @@ async function prepareRelease() {
   const { stdout } = await exec(
     `git log --oneline --pretty=format:'- %s' origin/master..HEAD`
   );
-  const commits = stdout.toString().trim();
+  const dict = {};
+  const commits = stdout
+    .toString()
+    .trim()
+    .replace(/(\r\n)|\r|\n/g, '\n')
+    .split(/\n+/g)
+    .filter((c) => {
+      if (c.includes('Merge pull request #')) {
+        return false;
+      }
+      if (c.includes('chore(deps-dev): bump')) {
+        if (
+          [
+            '@babel/cli',
+            '@babel/core',
+            '@babel/preset-env',
+            '@babel/preset-typescript',
+            'core-js',
+            'terser',
+          ].some((dep) => {
+            const result = !(dep in dict) && c.includes(dep);
+            if (result) {
+              dict[dep] = true;
+            }
+            return result;
+          })
+        ) {
+          return true;
+        }
+        return false;
+      }
+      return true;
+    })
+    .join('\n');
   let changelog = await fs.readFile('CHANGELOG.md', { encoding: 'utf8' });
   changelog = `## [${newVersion}](${url}) (${date})
 
@@ -67,7 +100,7 @@ ${changelog}`;
       `git commit -m "chore(release): update changelog for v${newVersion}" --no-verify`
     );
     await exec(
-      `npm version --no-commit-hooks ${newVersion} -m '[RELEASE] v${newVersion}'`
+      `npm version --no-commit-hooks ${newVersion} -m 'chore(release) v${newVersion}'`
     );
   }
 }
