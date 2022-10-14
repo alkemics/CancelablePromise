@@ -1,6 +1,11 @@
+const toStringTag: typeof Symbol.toStringTag =
+  typeof Symbol !== 'undefined' ? Symbol.toStringTag : ('@@toStringTag' as any);
+
 class CancelablePromiseInternal<T = any> {
   #internals: Internals;
   #promise: Promise<T>;
+
+  [toStringTag] = 'CancelablePromise';
 
   constructor({
     executor = () => {},
