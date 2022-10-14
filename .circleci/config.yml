@@ -1,0 +1,44 @@
+version: 2.1
+
+orbs:
+  ci: alkemics/ci@1
+
+aliases:
+  - filter-tags-only: &tags-only
+      tags:
+        only: /^v.*/
+      branches:
+        ignore: /.*/
+
+jobs:
+  publish:
+    executor:
+      name: ci/nodejs
+      resource_class: small
+      nodejs_version: lts
+    steps:
+      - attach_workspace:
+          at: /home/circleci
+      - ci/set-npm-config:
+          publish: true
+      - run:
+          name: Publish npm package
+          command: npm publish
+
+workflows:
+  publish:
+    jobs:
+      - ci/nodejs-setup:
+          name: Setup
+          filters: *tags-only
+          executor:
+            name: ci/nodejs
+            resource_class: small
+            nodejs_version: lts
+          context:
+            - npm
+      - publish:
+          name: Publish
+          filters: *tags-only
+          context:
+            - npm-publish

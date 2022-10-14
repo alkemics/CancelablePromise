@@ -15,4 +15,6 @@ jobs:
         with:
           browser: chrome
           headless: true
+          install-command: npm ci
+          build: npm run build
           start: npm run test:serve
