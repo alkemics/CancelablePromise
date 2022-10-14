@@ -44,7 +44,7 @@
     "lint:rc": "eslint --ext .js,.ts --fix",
     "lint": "eslint . --ext .js,.ts",
     "prepare": "husky install",
-    "prepublish": "npm run build",
+    "prepublishOnly": "npm run build",
     "prettier:rc": "prettier --write",
     "prettier": "prettier --write .",
     "release:major:nc": "node scripts.js prepare_release major --no-commit",
