@@ -64,7 +64,7 @@ ${changelog}`;
   if (!process.argv.includes('--no-commit')) {
     await exec('git add CHANGELOG.md');
     await exec(
-      `git commit -m "[RELEASE] update changelog for v${newVersion}" --no-verify`
+      `git commit -m "chore(release): update changelog for v${newVersion}" --no-verify`
     );
     await exec(
       `npm version --no-commit-hooks ${newVersion} -m '[RELEASE] v${newVersion}'`
