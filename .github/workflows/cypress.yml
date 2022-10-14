@@ -14,7 +14,7 @@ jobs:
       - uses: cypress-io/github-action@v4
         with:
           browser: chrome
-          headless: true
+          headed: false
           install-command: npm ci
           build: npm run build
           start: npm run test:serve
