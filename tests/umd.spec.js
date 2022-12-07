@@ -1,4 +1,9 @@
-import { cancelable, CancelablePromise } from '../umd/CancelablePromise.min.js';
 import { expectCancelablePromise } from './cancelable-promise.expect';
 
-expectCancelablePromise(() => ({ cancelable, CancelablePromise }));
+describe('UMD cancelable promise', () => {
+  expectCancelablePromise({
+    html: 'umd',
+    cancelablePath: 'CancelablePromise.cancelable',
+    CancelablePromisePath: 'CancelablePromise.CancelablePromise',
+  });
+});
