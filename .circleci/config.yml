@@ -1,7 +1,7 @@
 version: 2.1
 
 orbs:
-  ci: alkemics/ci@1
+  ci: alkemics/ci@2
 
 aliases:
   - filter-tags-only: &tags-only
