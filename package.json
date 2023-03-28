@@ -78,7 +78,7 @@
     "@babel/preset-typescript": "~7.21.0",
     "@types/jest": "~29.5.0",
     "@typescript-eslint/eslint-plugin": "~5.57.0",
-    "@typescript-eslint/parser": "~5.56.0",
+    "@typescript-eslint/parser": "~5.57.0",
     "concurrently": "~7.6.0",
     "core-js": "~3.29.1",
     "cypress": "~12.8.1",
