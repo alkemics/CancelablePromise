@@ -5,3 +5,15 @@ updates:
     schedule:
       interval: daily
     versioning-strategy: increase
+    groups:
+      babel:
+        patterns:
+          - '@babel/*'
+          - 'core-js'
+      jest:
+        patterns:
+          - 'jest'
+          - '@types/jest'
+      typescript-eslint:
+        patterns:
+          - '@typescript-eslint/*'
