@@ -31,7 +31,7 @@ async function clean() {
 }
 
 async function copy() {
-  await fs.copy('umd/CancelablePromise.d.ts', 'esm/CancelablePromise.d.ts');
+  await fs.copy('umd/CancelablePromise.d.ts', 'esm/CancelablePromise.d.mts');
 }
 
 async function logVersionToPublish() {
