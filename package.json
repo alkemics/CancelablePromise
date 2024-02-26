@@ -8,19 +8,29 @@
     "cancellable"
   ],
   "type": "commonjs",
+  "main": "umd/CancelablePromise.js",
+  "browser": "umd/CancelablePromise.js",
+  "module": "esm/CancelablePromise.mjs",
+  "types": "umd/CancelablePromise.d.ts",
   "exports": {
-    "module": "./esm/CancelablePromise.mjs",
-    "import": {
-      "types": "./esm/CancelablePromise.d.mts",
-      "default": "./esm/CancelablePromise.mjs"
-    },
-    "require": {
-      "types": "./umd/CancelablePromise.d.ts",
+    ".": {
+      "module": "./esm/CancelablePromise.mjs",
+      "import": {
+        "types": "./esm/CancelablePromise.d.mts",
+        "default": "./esm/CancelablePromise.mjs"
+      },
+      "browser": {
+        "types": "./esm/CancelablePromise.d.mts",
+        "default": "./esm/CancelablePromise.mjs"
+      },
+      "require": {
+        "types": "./umd/CancelablePromise.d.ts",
+        "default": "./umd/CancelablePromise.js"
+      },
       "default": "./umd/CancelablePromise.js"
     },
-    "default": "./umd/CancelablePromise.js"
+    "./package.json": "./package.json"
   },
-  "types": "./umd/CancelablePromise.d.ts",
   "files": [
     "umd/CancelablePromise.js",
     "umd/CancelablePromise.js.map",
