@@ -9,7 +9,7 @@
   ],
   "type": "commonjs",
   "main": "umd/CancelablePromise.js",
-  "browser": "umd/CancelablePromise.js",
+  "browser": "esm/CancelablePromise.mjs",
   "module": "esm/CancelablePromise.mjs",
   "types": "umd/CancelablePromise.d.ts",
   "exports": {
@@ -31,6 +31,8 @@
     },
     "./package.json": "./package.json"
   },
+  "unpkg": "./umd/CancelablePromise.js",
+  "jsdelivr": "./umd/CancelablePromise.js",
   "files": [
     "umd/CancelablePromise.js",
     "umd/CancelablePromise.js.map",
