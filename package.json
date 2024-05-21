@@ -90,7 +90,7 @@
     "lint-staged": "~15.2.2",
     "prettier": "~3.2.5",
     "semver": "~7.6.2",
-    "terser": "~5.24.0",
+    "terser": "~5.31.0",
     "typescript": "~5.4.5",
     "wait-on": "~7.0.1"
   }
