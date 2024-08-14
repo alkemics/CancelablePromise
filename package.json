@@ -81,7 +81,7 @@
     "@typescript-eslint/parser": "~7.18.0",
     "concurrently": "~8.2.1",
     "core-js": "~3.38.0",
-    "cypress": "~13.13.2",
+    "cypress": "~13.13.3",
     "eslint": "~8.57.0",
     "express": "~4.19.2",
     "fs-extra": "~11.2.0",
