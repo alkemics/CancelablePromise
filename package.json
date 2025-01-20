@@ -82,7 +82,7 @@
     "concurrently": "~9.1.2",
     "core-js": "~3.40.0",
     "cypress": "~14.0.0",
-    "eslint": "~8.57.1",
+    "eslint": "~9.18.0",
     "express": "~4.21.2",
     "fs-extra": "~11.3.0",
     "husky": "~9.1.7",
