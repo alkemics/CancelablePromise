@@ -88,7 +88,7 @@
     "husky": "~9.1.7",
     "jest": "~30.0.3",
     "lint-staged": "~16.1.2",
-    "prettier": "~3.6.1",
+    "prettier": "~3.6.2",
     "semver": "~7.7.2",
     "terser": "~5.43.1",
     "typescript": "~5.8.3",
