@@ -84,7 +84,7 @@
     "cypress": "~14.5.4",
     "eslint": "~8.57.1",
     "express": "~5.1.0",
-    "fs-extra": "~11.3.0",
+    "fs-extra": "~11.3.1",
     "husky": "~9.1.7",
     "jest": "~30.0.5",
     "lint-staged": "~16.1.5",
