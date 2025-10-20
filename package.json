@@ -91,7 +91,7 @@
     "prettier": "~3.6.2",
     "semver": "~7.7.3",
     "terser": "~5.44.0",
-    "typescript": "~5.9.2",
+    "typescript": "~5.9.3",
     "wait-on": "~8.0.4"
   }
 }
