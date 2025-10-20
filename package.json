@@ -89,7 +89,7 @@
     "jest": "~30.2.0",
     "lint-staged": "~16.2.4",
     "prettier": "~3.6.2",
-    "semver": "~7.7.2",
+    "semver": "~7.7.3",
     "terser": "~5.44.0",
     "typescript": "~5.9.2",
     "wait-on": "~8.0.4"
