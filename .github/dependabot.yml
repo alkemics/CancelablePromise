@@ -6,14 +6,19 @@ updates:
       interval: daily
     versioning-strategy: increase
     groups:
-      babel:
+      internal-deps-minor-and-patch:
+        applies-to: version-updates
         patterns:
-          - '@babel/*'
-          - 'core-js'
-      jest:
+          - '@alkem/*'
+        update-types:
+          - 'minor'
+          - 'patch'
+      external-deps-minor-and-patch:
+        applies-to: version-updates
         patterns:
-          - 'jest'
-          - '@types/jest'
-      typescript-eslint:
-        patterns:
-          - '@typescript-eslint/*'
+          - '*'
+        exclude-patterns:
+          - '@alkem/*'
+        update-types:
+          - 'minor'
+          - 'patch'
