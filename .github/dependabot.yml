@@ -22,3 +22,5 @@ updates:
         update-types:
           - 'minor'
           - 'patch'
+    registries:
+      - registry-npmjs-org
