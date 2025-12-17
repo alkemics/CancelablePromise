@@ -1,10 +1,14 @@
 version: 2
+registries:
+  registry-npmjs-org:
+    type: npm-registry
+    url: https://registry.npmjs.org
+    token: '${{secrets.NPM_TOKEN}}'
 updates:
   - package-ecosystem: npm
     directory: '/'
     schedule:
       interval: daily
-    versioning-strategy: increase
     groups:
       internal-deps-minor-and-patch:
         applies-to: version-updates
@@ -22,3 +26,9 @@ updates:
         update-types:
           - 'minor'
           - 'patch'
+    registries:
+      - registry-npmjs-org
+    versioning-strategy: increase
+    commit-message:
+      prefix: chore(deps)
+      prefix-development: chore(dev-deps)
