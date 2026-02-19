@@ -1,9 +1,9 @@
 version: 2
 registries:
-  registry-npmjs-org:
+  registry-npm-salsify:
     type: npm-registry
-    url: https://registry.npmjs.org
-    token: '${{secrets.NPM_TOKEN}}'
+    url: https://npm.salsify.com/api/npm/npm-local/
+    token: '${{secrets.ARTIFACTORY_TOKEN}}'
 updates:
   - package-ecosystem: npm
     directory: '/'
@@ -27,7 +27,7 @@ updates:
           - 'minor'
           - 'patch'
     registries:
-      - registry-npmjs-org
+      - registry-npm-salsify
     versioning-strategy: increase
     commit-message:
       prefix: chore(deps)
