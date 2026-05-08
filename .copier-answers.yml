@@ -1,0 +1,23 @@
+# Changes here will be overwritten by Copier; do not edit manually.
+_commit: v1.11.2
+_src_path: gh:alkemics/copier-templates
+auto_merge_matchers:
+  - dependency-type: all
+    update-type: minor
+dependabot_extra_ignores: []
+dependabot_group_exclude_patterns: []
+dependabot_max_prs: 5
+project_language: javascript
+project_name: CancelablePromise
+test_runner: none
+with_build_check: false
+with_couchbase: false
+with_elasticsearch: false
+with_eslint: true
+with_mysql: false
+with_publish: true
+with_semver_release: true
+with_storybook: false
+with_stylelint: false
+with_typescript: true
+with_webpack_types: false

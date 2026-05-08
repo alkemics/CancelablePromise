@@ -9,6 +9,7 @@ updates:
     directory: '/'
     schedule:
       interval: daily
+    open-pull-requests-limit: 5
     groups:
       internal-deps-minor-and-patch:
         applies-to: version-updates
