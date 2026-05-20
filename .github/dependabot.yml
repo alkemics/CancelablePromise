@@ -9,23 +9,24 @@ updates:
     directory: '/'
     schedule:
       interval: daily
+    open-pull-requests-limit: 5
     groups:
       internal-deps-minor-and-patch:
         applies-to: version-updates
         patterns:
-          - '@alkem/*'
+          - "@alkem/*"
         update-types:
-          - 'minor'
-          - 'patch'
+          - "minor"
+          - "patch"
       external-deps-minor-and-patch:
         applies-to: version-updates
         patterns:
-          - '*'
+          - "*"
         exclude-patterns:
-          - '@alkem/*'
+          - "@alkem/*"
         update-types:
-          - 'minor'
-          - 'patch'
+          - "minor"
+          - "patch"
     registries:
       - registry-npm-salsify
     versioning-strategy: increase
