@@ -1,5 +1,5 @@
 # Changes here will be overwritten by Copier; do not edit manually.
-_commit: v1.12.6
+_commit: v1.14.0
 _src_path: gh:alkemics/copier-templates
 auto_merge_matchers:
 -   dependency-type: all
