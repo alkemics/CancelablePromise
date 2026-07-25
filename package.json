@@ -79,7 +79,7 @@
     "@types/jest": "~30.0.0",
     "@typescript-eslint/eslint-plugin": "~7.18.0",
     "@typescript-eslint/parser": "~7.18.0",
-    "concurrently": "~9.2.1",
+    "concurrently": "~9.2.4",
     "core-js": "~3.47.0",
     "cypress": "~15.7.0",
     "eslint": "~8.57.1",
