@@ -15,19 +15,10 @@ updates:
       exclude:
         - "@alkem/*"
     groups:
-      internal-deps-minor-and-patch:
-        applies-to: version-updates
-        patterns:
-          - "@alkem/*"
-        update-types:
-          - "minor"
-          - "patch"
-      external-deps-minor-and-patch:
+      minor-patch:
         applies-to: version-updates
         patterns:
           - "*"
-        exclude-patterns:
-          - "@alkem/*"
         update-types:
           - "minor"
           - "patch"

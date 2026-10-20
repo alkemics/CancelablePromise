@@ -1,6 +1,6 @@
 ## Problem
 
-[Jira ticket](https://salsify.atlassian.net/browse/SXMC-XXXX)
+[Jira ticket](https://salsify.atlassian.net/browse/OLSXM-XXXX)
 
 <!-- Brief description of the problems that pertain to the PR -->
 
@@ -14,4 +14,4 @@
 
 Prime:
 
-cc @alkemics/sxm-core
+cc @alkemics/sxm
